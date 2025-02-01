@@ -3,7 +3,7 @@
 #pragma once
 #include "./toolsNamespace.h"
 
-class TOOLS_EXPORT cyl::tools::Image {
+class CMAKEFUNCS_USERLIB_TOOLS_EXPORT cyl::tools::Image {
 public:
 	/// @brief 数据转换到图片 png 格式
 	/// @param data_ptr 数据指针

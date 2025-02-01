@@ -7,7 +7,7 @@
 #include "toolsNamespace.h"
 #include <memory>
 #include <vector>
-class TOOLS_EXPORT cyl::tools::path {
+class CMAKEFUNCS_USERLIB_TOOLS_EXPORT cyl::tools::path {
 public:
 	/// @brief 根路径
 	static const std::filesystem::path root_path;

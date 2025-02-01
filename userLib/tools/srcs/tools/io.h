@@ -3,6 +3,7 @@
 #pragma once
 #include "toolsNamespace.h"
 #include <string>
+
 namespace cyl::tools::io {
 	/**
 	* @brief 发出错误信息
@@ -12,7 +13,7 @@ namespace cyl::tools::io {
 	* @param file_line 错误行
 	* @return 格式化完成的异常信息
 	*/
-	TOOLS_EXPORT std::string error_print_to_std_errorio( const std::string &error_info, const std::string &error_file, const std::string &error_call_function_name, const size_t file_line );
+	CMAKEFUNCS_USERLIB_TOOLS_EXPORT std::string error_print_to_std_errorio( const std::string &error_info, const std::string &error_file, const std::string &error_call_function_name, const size_t file_line );
 	/**
 	* @brief 输出一个信息
 	* @param out_info 信息内容
@@ -21,7 +22,7 @@ namespace cyl::tools::io {
 	* @param file_line 输出行
 	* @return 格式化完成的信息
 	*/
-	TOOLS_EXPORT std::string out_print_to_std_outio( const std::string &out_info, const std::string &out_file, const std::string &out_call_function_name, const size_t file_line );
+	CMAKEFUNCS_USERLIB_TOOLS_EXPORT std::string out_print_to_std_outio( const std::string &out_info, const std::string &out_file, const std::string &out_call_function_name, const size_t file_line );
 };
 #include "path.h"
 

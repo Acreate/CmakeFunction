@@ -154,11 +154,6 @@ function( copy_dir_path_cmake_add_custom_command_PRE_LINK_command builder_target
     endif()
 endfunction()
 
-# # 配置模板到指定路径
-function( configure_temp_files trget_name target_path )
-    set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
-    configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h.in" "${target_path}/cmake_to_c_cpp_header_env.h" ) # # 项目信息
-endfunction()
 
 # # 过滤重复路径
 function( filter_path_repetition result_list path_dir_s )

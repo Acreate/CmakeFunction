@@ -5,7 +5,7 @@
 #include "toolsNamespace.h"
 #include <string>
 #include <chrono>
-class TOOLS_EXPORT cyl::tools::time {
+class CMAKEFUNCS_USERLIB_TOOLS_EXPORT cyl::tools::time {
 public:
 	using Ratio = std::ratio< 1, 10000000 >;
 	using l_time_t = long long;

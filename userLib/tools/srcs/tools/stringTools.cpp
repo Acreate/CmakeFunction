@@ -1,5 +1,4 @@
 ﻿#include "stringTools.h"
-#include <cwctype>
 #include <codecvt>
 #include <iostream>
 #include <sstream>
@@ -72,22 +71,7 @@ cyl::tools::ToolsString cyl::tools::stringTools::toLower( const ToolsString &con
 		dataPtr[ index ] = std::towlower( strPtr[ index ] );
 	return ToolsString( dataPtr, index );
 }
-cyl::tools::ToolsString cyl::tools::stringTools::removeAllSpaceChar( const ToolsString &conver_tools_string ) {
-	auto strPtr = conver_tools_string.c_str( );
-	auto len = conver_tools_string.length( );
-	std::vector< ToolsString::value_type > data( len );
-	auto index = 0, dataIndex = 0;
-	auto dataPtr = data.data( );
-	for( ; index < len; ++index )
-		if( isSpace( strPtr[ index ] ) )
-			dataPtr[ dataIndex++ ] = strPtr[ index ];
-	return ToolsString( dataPtr, dataIndex );
-}
-bool cyl::tools::stringTools::isSpace( const ToolsString::value_type &check_char ) {
-	if( std::iswblank( check_char ) || std::isspace( check_char ) || std::iswcntrl( check_char ) || !std::isprint( check_char ) )
-		return true;
-	return false;
-}
+
 cyl::tools::ToolsString cyl::tools::stringTools::replaceSubString( const CharValueType *org_str, const size_t org_str_len, const CharValueType *replace_src_str, const size_t replace_src_str_len, const CharValueType *replace_target_str, const size_t replace_target_str_len, size_t replace_count ) {
 	if( replace_count == 0 )
 		return org_str;
@@ -187,4 +171,114 @@ cyl::tools::ToolsString cyl::tools::stringTools::replaceSubStringOnLast( ToolsSt
 	auto replaceWString = replaceSubString( org_str.c_str( ), org_str.length( ), replace_src_str.c_str( ), replace_src_str.length( ), replace_target_str.c_str( ), replace_target_str.length( ), replace_count );
 	std::reverse( replaceWString.begin( ), replaceWString.end( ) ); // 重新逆转
 	return replaceWString; // 返回逆转后的字符串
+}
+std::vector< std::wstring > cyl::tools::stringTools::splitString( const std::wstring &source, const std::wstring &check_string ) {
+	std::vector< std::wstring > result;
+	auto matchDataLen = check_string.length( ); // 匹配长度
+	if( matchDataLen == 0 )
+		return result;
+	auto sourceLen = source.length( ); // 源长度
+	if( sourceLen == 0 )
+		return result;
+	auto sourceDataPtr = source.data( ); // 源
+	auto matchDataPtr = check_string.data( ); // 匹配源
+	size_t cloneSourceIndex = 0, // 检查时候使用的克隆下标
+			spliteStartIndex = 0, // 切分的起始下标
+			matchIndex = 0, // 匹配目标
+			sourceIndex = 0; // 遍历源
+	auto *buff = new std::wstring::value_type[ sourceLen ];
+	while( sourceIndex < sourceLen ) {
+		auto checkChar = sourceDataPtr[ sourceIndex ];
+		if( matchDataPtr[ matchIndex ] == checkChar ) {
+			++sourceIndex; // 源加下标
+			++matchIndex; // 匹配加下标
+			cloneSourceIndex = sourceIndex; // 拷贝源下标
+			for( ; matchIndex < matchDataLen && cloneSourceIndex < sourceLen; ++matchIndex, ++cloneSourceIndex ) { // 匹配整个匹配字符串
+				if( matchDataPtr[ matchIndex ] != sourceDataPtr[ cloneSourceIndex ] ) {
+					matchIndex = 0; // 重置
+					break;
+				}
+			}
+			// 完全匹配，同时缓存存在数据，可以存在到列表当中
+			if( matchIndex != 0 && spliteStartIndex != 0 ) {
+				result.emplace_back( std::wstring( buff, spliteStartIndex ) );
+				sourceIndex = cloneSourceIndex;
+			}
+			matchIndex = spliteStartIndex = 0;
+			continue; // 不在拷贝
+		}
+		buff[ spliteStartIndex++ ] = checkChar; // 拷贝当前不匹配元素
+		++sourceIndex;
+	}
+	if( spliteStartIndex )
+		result.emplace_back( std::wstring( buff, spliteStartIndex ) );
+	delete[] buff;
+	return result;
+}
+std::wstring cyl::tools::stringTools::removeAllSpaceChar( const std::wstring &conver_tools_string ) {
+	auto strPtr = conver_tools_string.c_str( );
+	auto len = conver_tools_string.length( );
+	std::vector< std::wstring::value_type > data( len );
+	auto index = 0, dataIndex = 0;
+	auto dataPtr = data.data( );
+	for( ; index < len; ++index )
+		if( !isSpace( strPtr[ index ] ) )
+			dataPtr[ dataIndex++ ] = strPtr[ index ];
+	return ToolsString( dataPtr, dataIndex );
+}
+std::wstring cyl::tools::stringTools::removeLeftSpaceChar( const std::wstring &conver_tools_string ) {
+	auto strPtr = conver_tools_string.c_str( );
+	auto len = conver_tools_string.length( );
+	std::vector< std::wstring::value_type > data( len );
+	auto index = 0, dataIndex = 0;
+	auto dataPtr = data.data( );
+	for( ; index < len; ++index )
+		if( !isSpace( strPtr[ index ] ) ) {
+			dataPtr[ dataIndex++ ] = strPtr[ index++ ];
+			for( ; index < len; ++index )
+				dataPtr[ dataIndex++ ] = strPtr[ index ];
+			break;
+		}
+	return std::wstring( dataPtr, dataIndex );
+}
+std::wstring cyl::tools::stringTools::removeRightSpaceChar( const std::wstring &conver_tools_string ) {
+	auto strPtr = conver_tools_string.c_str( );
+	auto len = conver_tools_string.length( );
+	std::vector< std::wstring::value_type > data( len );
+	auto index = 0, dataIndex = 0;
+	auto dataPtr = data.data( );
+	if( len != 0 )
+		do {
+			--len;
+			if( !isSpace( strPtr[ len ] ) ) {
+				dataPtr[ dataIndex++ ] = strPtr[ index++ ];
+				for( ; index <= len; ++index )
+					dataPtr[ dataIndex++ ] = strPtr[ index ];
+				break;
+			}
+		} while( len != 0 );
+	return std::wstring( dataPtr, dataIndex );
+}
+std::wstring cyl::tools::stringTools::removeBothSpaceChar( const std::wstring &conver_tools_string ) {
+	auto strPtr = conver_tools_string.c_str( );
+	auto len = conver_tools_string.length( );
+	std::vector< std::wstring::value_type > data( len );
+	auto index = 0, dataIndex = 0;
+	auto dataPtr = data.data( );
+	if( len != 0 )
+		do {
+			--len;
+			if( !isSpace( strPtr[ len ] ) ) {
+				for( ; index < len; ++index )
+					if( !isSpace( strPtr[ index ] ) ) {
+						dataPtr[ dataIndex++ ] = strPtr[ index++ ];
+						for( ; index < len; ++index )
+							dataPtr[ dataIndex++ ] = strPtr[ index ];
+						dataPtr[ dataIndex++ ] = strPtr[ index ];
+						break;
+					}
+				break;
+			}
+		} while( len != 0 );
+	return std::wstring( dataPtr, dataIndex );
 }
