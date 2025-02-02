@@ -66,21 +66,34 @@ function( set_target_link_freeglut3_lib target_obj )
     endif()
 endfunction()
 
-# ## 配置指定目标的 glad
+# ## 配置指定目标的  glad 4.6 compatibility
+function( set_target_link_glad46compatibility_lib target_obj )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-4-6.compatibility" )
+    include_path_package()
+    get_absolute_path( absDir ${root_path} )
+    set( copySourceCFile "${absDir}/src/glad.c" )
+    target_sources( ${target_obj} PRIVATE "${copySourceCFile}" )
+    target_include_directories( ${target_obj} PUBLIC "${absDir}/include" )
+endfunction()
+
+# ## 配置指定目标的  glad 4.6 core
+function( set_target_link_glad46core_lib target_obj )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-4-6.core" )
+    include_path_package()
+    get_absolute_path( absDir ${root_path} )
+    set( copySourceCFile "${absDir}/src/glad.c" )
+    target_sources( ${target_obj} PRIVATE "${copySourceCFile}" )
+    target_include_directories( ${target_obj} PUBLIC "${absDir}/include" )
+endfunction()
+
+# ## 配置指定目标的 glad 3.3 core
 function( set_target_link_glad33core_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-3-3.core" )
     include_path_package()
-
     get_absolute_path( absDir ${root_path} )
-
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( ${target_obj} PRIVATE "${copySourceCFile}" )
-
-    # get_target_property( cmake_property_source_dir ${target_obj} SOURCE_DIR )
-    # file( COPY ${copySourceCFile} DESTINATION "${cmake_property_source_dir}/libs/glad33core/src/" )
     target_include_directories( ${target_obj} PUBLIC "${absDir}/include" )
-
-    # target_compile_definitions( ${target_obj} PRIVATE GLFW_INCLUDE_NONE )
 endfunction()
 
 # ## 配置指定目标的 glad
