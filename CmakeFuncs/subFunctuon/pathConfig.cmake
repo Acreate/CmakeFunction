@@ -154,7 +154,6 @@ function( copy_dir_path_cmake_add_custom_command_PRE_LINK_command builder_target
     endif()
 endfunction()
 
-
 # # 过滤重复路径
 function( filter_path_repetition result_list path_dir_s )
     set( exis_dir_path_s ) # 保存已经加载的列表
@@ -201,4 +200,75 @@ function( get_cmake_separator result_path_sep )
     math( EXPR satrtIndex "${beginIndex}-1" OUTPUT_FORMAT DECIMAL )
     string( SUBSTRING ${absolutePath} ${satrtIndex} 1 resultSep )
     set( ${result_path_sep} "${resultSep}" PARENT_SCOPE )
+endfunction()
+
+function( get_path_files result_file_list get_path )
+    set( result_list )
+
+    foreach( pathItem ${${result_file_list}} )
+        get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
+
+        list( FIND result_list ${result_abs_path} find_index )
+
+        if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
+            list( APPEND result_list ${result_abs_path} )
+        endif()
+    endforeach()
+
+    if( IS_DIRECTORY ${get_path} )
+        file( GLOB file_get_current_path "${get_path}/*" )
+
+        foreach( pathItem ${file_get_current_path} )
+            get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
+            get_path_files( foreach_call_result ${result_abs_path} )
+
+            foreach( findItem ${foreach_call_result} )
+                list( FIND result_list ${findItem} find_index )
+
+                if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
+                    list( APPEND result_list ${findItem} )
+                endif()
+            endforeach()
+        endforeach()
+    else()
+        get_filename_component( result_abs_path "${get_path}" ABSOLUTE ) # 全路径
+        list( APPEND result_list ${result_abs_path} )
+    endif()
+
+    set( ${result_file_list} ${result_list} PARENT_SCOPE )
+endfunction()
+
+function( get_path_dirs result_dir_list get_path )
+    set( result_list )
+
+    foreach( pathItem ${${result_file_list}} )
+        get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
+        list( FIND result_list ${result_abs_path} find_index )
+
+        if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
+            list( APPEND result_list ${result_abs_path} )
+        endif()
+    endforeach()
+
+    if( IS_DIRECTORY ${get_path} )
+        file( GLOB file_get_current_path "${get_path}/*" )
+
+        foreach( pathItem ${file_get_current_path} )
+            if( IS_DIRECTORY ${pathItem} )
+                get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
+                list( APPEND result_list ${result_abs_path} )
+                get_path_dirs( foreach_call_result ${result_abs_path} )
+
+                foreach( findItem ${foreach_call_result} )
+                    list( FIND result_list ${findItem} find_index )
+
+                    if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
+                        list( APPEND result_list ${findItem} )
+                    endif()
+                endforeach()
+            endif()
+        endforeach()
+    endif()
+
+    set( ${result_dir_list} ${result_list} PARENT_SCOPE )
 endfunction()

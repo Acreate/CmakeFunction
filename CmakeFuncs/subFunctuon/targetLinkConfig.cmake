@@ -491,6 +491,25 @@ function( configure_temp_files generate_file_path target_path target_obj )
     configure_file( "${rootPath}/cmake_property_to_c_cpp_header_env.h.in" "${target_path}/cmake_property_to_c_cpp_header_env.h" ) # # 项目信息
     configure_file( "${rootPath}/cmake_value_to_c_cpp_header_env.h.in" "${target_path}/cmake_value_to_c_cpp_header_env.h" ) # # 项目信息
 
-    get_absolute_path( target_path "${target_path}/cmake_to_c_cpp_header_env.h" "${target_path}/cmake_property_to_c_cpp_header_env.h" "${target_path}/cmake_value_to_c_cpp_header_env.h" )
-    set( ${generate_file_path} "${target_path}" PARENT_SCOPE )
+    get_path_files( head_file_list "${target_path}" )
+    set( head_file_name_list ) # # 基本名称
+    set( c_head_macro "CMAKE_INCLUDE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__" )
+    set( head_file_context "\n\
+#ifndef ${c_head_macro}\n\
+#define ${c_head_macro}\n\
+#pragma once\n" )
+
+    foreach( head_file ${head_file_list} )
+        get_filename_component( fileName ${head_file} NAME )
+        list( APPEND head_file_name_list ${fileName} )
+        set( head_file_context "${head_file_context}\
+#include \"${fileName}\"\n" )
+    endforeach()
+
+    set( head_file_context "${head_file_context}\n\
+#endif // ${c_head_macro}\n\n\n
+" )
+    file( WRITE "${target_path}/cmake_include_to_c_cpp_header_env.h" "${head_file_context}" )
+    get_path_files( head_file_list "${target_path}" )
+    set( ${generate_file_path} "${head_file_list}" PARENT_SCOPE )
 endfunction()
