@@ -19,14 +19,14 @@ set_target_static_lib_out_path_property( ${PROJECT_NAME} "${Project_Run_Static_L
 set_target_pdb_out_path_property( ${PROJECT_NAME} "${Project_Run_Pbd_Path}" )
 set_target_link_user_tools_lib( ${prject_name} )
 
-# # 生成文件
-set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
-configure_temp_files( outTemPtah ${cmake_definitions_env_out} ${prject_name} )
-
 # 添加源文件
 target_include_directories( ${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" ) # 加入头文件搜索路径
 get_path_files( project_src_file "srcs" )
-target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} ${outTemPtah} )
+target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} )
+
+# # 生成文件
+set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
+configure_temp_files( outTemPtah ${cmake_definitions_env_out} ${prject_name} )
 
 set( copy_file_target_dir "${Project_Run_Bin_Path}/${PROJECT_NAME}" )
 set( copy_file_src_dir "${CMAKE_CURRENT_LIST_DIR}" )

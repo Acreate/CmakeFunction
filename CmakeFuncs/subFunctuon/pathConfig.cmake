@@ -208,6 +208,10 @@ function( get_path_files result_file_list get_path )
     foreach( pathItem ${${result_file_list}} )
         get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
 
+        if( IS_DIRECTORY ${result_abs_path} OR NOT EXISTS ${result_abs_path} )
+            continue()
+        endif()
+
         list( FIND result_list ${result_abs_path} find_index )
 
         if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
@@ -231,8 +235,10 @@ function( get_path_files result_file_list get_path )
             endforeach()
         endforeach()
     else()
-        get_filename_component( result_abs_path "${get_path}" ABSOLUTE ) # 全路径
-        list( APPEND result_list ${result_abs_path} )
+        if( EXISTS ${result_abs_path} )
+            get_filename_component( result_abs_path "${get_path}" ABSOLUTE ) # 全路径
+            list( APPEND result_list ${result_abs_path} )
+        endif()
     endif()
 
     set( ${result_file_list} ${result_list} PARENT_SCOPE )
@@ -245,12 +251,18 @@ function( get_path_dirs result_dir_list get_path )
         get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
         list( FIND result_list ${result_abs_path} find_index )
 
-        if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
-            list( APPEND result_list ${result_abs_path} )
+        if( NOT EXISTS ${result_abs_path} )
+            continue()
+        endif()
+
+        if( IS_DIRECTORY ${result_abs_path} )
+            if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
+                list( APPEND result_list ${result_abs_path} )
+            endif()
         endif()
     endforeach()
 
-    if( IS_DIRECTORY ${get_path} )
+    if( IS_DIRECTORY ${get_path} AND EXISTS ${get_path} )
         file( GLOB file_get_current_path "${get_path}/*" )
 
         foreach( pathItem ${file_get_current_path} )

@@ -13,5 +13,6 @@
 #define Cmake_Source_Dir "${CMAKE_SOURCE_DIR}" // cmake 根目录
 #define Archive_Output_Name "${ARCHIVE_OUTPUT_NAME}" // cmake 输出名称
 #define Compile_Pdb_Name "${COMPILE_PDB_NAME}" // cmake pbd 名称
+#define Compile_SOURCES "${SOURCES}" // 源码
 
 #endif // CMAKE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__

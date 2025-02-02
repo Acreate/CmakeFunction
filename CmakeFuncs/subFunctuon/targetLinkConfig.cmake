@@ -16,8 +16,7 @@ endfunction()
 # ## 配置指定目标的 glew3
 function( set_target_link_glew3_lib target_obj )
     target_link_libraries( ${target_obj} PUBLIC
-        "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glew-2.2.0/lib/Release/x64/glew32.lib"
-        "opengl32.lib" )
+        "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glew-2.2.0/lib/Release/x64/glew32.lib" )
     target_include_directories( ${target_obj} PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glew-2.2.0/include" )
 
@@ -32,13 +31,17 @@ function( set_target_link_glew3_lib target_obj )
     endif()
 endfunction()
 
+function( set_target_link_win_opengl3_lib target_obj )
+    target_link_libraries( ${target_obj} PUBLIC "opengl32.lib" )
+endfunction()
+
 # ## 配置指定目标的 glfw3
 function( set_target_link_glfw3_lib target_obj )
     target_include_directories( ${target_obj} PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glfw-3.4.bin.WIN64/include" )
     target_link_libraries( ${target_obj} PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
-        "opengl32.lib" )
+    )
 endfunction()
 
 # ## 配置指定目标的 glut3
@@ -64,13 +67,30 @@ function( set_target_link_freeglut3_lib target_obj )
 endfunction()
 
 # ## 配置指定目标的 glad
+function( set_target_link_glad33core_lib target_obj )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-3-3.core" )
+    include_path_package()
+
+    get_absolute_path( absDir ${root_path} )
+
+    set( copySourceCFile "${absDir}/src/glad.c" )
+    target_sources( ${target_obj} PRIVATE "${copySourceCFile}" )
+
+    # get_target_property( cmake_property_source_dir ${target_obj} SOURCE_DIR )
+    # file( COPY ${copySourceCFile} DESTINATION "${cmake_property_source_dir}/libs/glad33core/src/" )
+    target_include_directories( ${target_obj} PUBLIC "${absDir}/include" )
+
+    # target_compile_definitions( ${target_obj} PRIVATE GLFW_INCLUDE_NONE )
+endfunction()
+
+# ## 配置指定目标的 glad
 function( set_target_link_glad_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad_noes_core" )
 
-    target_sources( ${target_obj} PRIVATE
-            "${root_path}/src/glad.c" )
-    target_include_directories( ${target_obj} PUBLIC
-        "${root_path}/include" )
+    target_sources( ${target_obj} PUBLIC "${root_path}/src/glad.c" )
+    target_include_directories( ${target_obj} PUBLIC "${root_path}/include" )
+
+    # target_compile_definitions( ${target_obj} PRIVATE GLFW_INCLUDE_NONE )
 endfunction()
 
 # ## 配置指定目标的 opencv4110
@@ -119,7 +139,7 @@ function( set_target_link_user_tools_lib target_obj )
 endfunction()
 
 # # 配置模板到指定路径
-function( configure_temp_files generate_file_path target_path target_obj )
+function( configure_temp_files target_path target_obj )
     get_target_property( cmake_property_additional_clean_files ${target_obj} ADDITIONAL_CLEAN_FILES )
     get_target_property( cmake_property_aix_export_all_symbols ${target_obj} AIX_EXPORT_ALL_SYMBOLS )
     get_target_property( cmake_property_aix_shared_library_archive ${target_obj} AIX_SHARED_LIBRARY_ARCHIVE )
@@ -485,6 +505,7 @@ function( configure_temp_files generate_file_path target_path target_obj )
     get_target_property( cmake_property_timeout_signal_name ${target_obj} TIMEOUT_SIGNAL_NAME )
     get_target_property( cmake_property_will_fail ${target_obj} WILL_FAIL )
     get_target_property( cmake_property_working_directory ${target_obj} WORKING_DIRECTORY )
+    get_target_property( cmake_property_sources ${target_obj} SOURCES )
 
     set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
     configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h.in" "${target_path}/cmake_to_c_cpp_header_env.h" ) # # 项目信息
@@ -498,13 +519,14 @@ function( configure_temp_files generate_file_path target_path target_obj )
 #ifndef ${c_head_macro}\n\
 #define ${c_head_macro}\n\
 #pragma once\n" )
-	
-	set(write_file_name "cmake_include_to_c_cpp_header_env.h")
-	get_filename_component( write_file_name ${write_file_name} NAME )
+
+    set( write_file_name "cmake_include_to_c_cpp_header_env.h" )
+    get_filename_component( write_file_name ${write_file_name} NAME )
+
     foreach( head_file ${head_file_list} )
         get_filename_component( fileName ${head_file} NAME )
 
-        if( "${fileName}" STREQUAL  "${write_file_name}" )
+        if( "${fileName}" STREQUAL "${write_file_name}" )
             continue()
         endif()
 
@@ -517,6 +539,5 @@ function( configure_temp_files generate_file_path target_path target_obj )
 #endif // ${c_head_macro}\n\n\n
 " )
     file( WRITE "${target_path}/${write_file_name}" "${head_file_context}" )
-    get_path_files( head_file_list "${target_path}" )
-    set( ${generate_file_path} "${head_file_list}" PARENT_SCOPE )
+    target_include_directories( ${target_obj} PRIVATE "${target_path}" )
 endfunction()

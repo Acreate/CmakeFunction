@@ -16,14 +16,11 @@ normal_project_name( result_name "${jionResult}" )
 set( prject_name ${result_name} )
 message( "============ ${prject_name}" )
 message( "name =" ${prject_name} )
-project( ${prject_name}
-        VERSION 0.1
-        LANGUAGES CXX )
+project( ${prject_name} )
 message( "============ ${CURRENT_FOLDER}" )
 
 add_library( ${PROJECT_NAME} SHARED )
-set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
-configure_temp_files( outTemPtah ${cmake_definitions_env_out} ${prject_name} )
+
 set( include_path "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 
 string( REPLACE "." "_" project_name_include_dir ${PROJECT_NAME} )
@@ -39,13 +36,11 @@ string( TOUPPER ${exportFileStartName} exportFileStartName )
 set( exportFileName "${CMAKE_CURRENT_SOURCE_DIR}/auto_generate_files/export/${exportFileStartName}${exportFileName}_export.h" )
 generate_export_header( ${PROJECT_NAME} EXPORT_FILE_NAME ${exportFileName} )
 
-set_target_link_glew3_lib( ${PROJECT_NAME} )
-set_target_link_glfw3_lib( ${PROJECT_NAME} )
-set_target_link_glm_lib( ${PROJECT_NAME} )
-
-file( GLOB_RECURSE project_src_file "srcs/*.cpp" "srcs/*.c" "srcs/*.h" )
-
 # 添加源文件
-target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} ${cmake_definitions_env_out} ${exportFileName} ) # 添加源文件
+target_include_directories( ${PROJECT_NAME} PUBLIC "${include_path}/srcs" ) # 加入头文件搜索路径
+get_path_files( project_src_file "srcs" )
+target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC ${include_path} )
+set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
+configure_temp_files( ${cmake_definitions_env_out} ${prject_name} )
