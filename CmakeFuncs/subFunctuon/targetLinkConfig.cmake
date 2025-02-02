@@ -262,7 +262,6 @@ function( configure_temp_files generate_file_path target_path target_obj )
     get_target_property( cmake_property_imported_link_interface_languages ${target_obj} IMPORTED_LINK_INTERFACE_LANGUAGES )
     get_target_property( cmake_property_imported_link_interface_libraries ${target_obj} IMPORTED_LINK_INTERFACE_LIBRARIES )
     get_target_property( cmake_property_imported_link_interface_multiplicity ${target_obj} IMPORTED_LINK_INTERFACE_MULTIPLICITY )
-    get_target_property( cmake_property_imported_location ${target_obj} IMPORTED_LOCATION )
     get_target_property( cmake_property_imported_no_soname ${target_obj} IMPORTED_NO_SONAME )
     get_target_property( cmake_property_imported_objects ${target_obj} IMPORTED_OBJECTS )
     get_target_property( cmake_property_imported_soname ${target_obj} IMPORTED_SONAME )
@@ -488,8 +487,10 @@ function( configure_temp_files generate_file_path target_path target_obj )
     get_target_property( cmake_property_working_directory ${target_obj} WORKING_DIRECTORY )
 
     set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
-    get_absolute_path( target_path "${target_path}/cmake_to_c_cpp_header_env.h" )
-    configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h.in" "${target_path}" ) # # 项目信息
+    configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h.in" "${target_path}/cmake_to_c_cpp_header_env.h" ) # # 项目信息
+    configure_file( "${rootPath}/cmake_property_to_c_cpp_header_env.h.in" "${target_path}/cmake_property_to_c_cpp_header_env.h" ) # # 项目信息
+    configure_file( "${rootPath}/cmake_value_to_c_cpp_header_env.h.in" "${target_path}/cmake_value_to_c_cpp_header_env.h" ) # # 项目信息
 
+    get_absolute_path( target_path "${target_path}/cmake_to_c_cpp_header_env.h" "${target_path}/cmake_property_to_c_cpp_header_env.h" "${target_path}/cmake_value_to_c_cpp_header_env.h" )
     set( ${generate_file_path} "${target_path}" PARENT_SCOPE )
 endfunction()

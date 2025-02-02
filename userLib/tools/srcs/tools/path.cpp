@@ -324,6 +324,66 @@ size_t cyl::tools::path::getPathDirAndFileRecursive( std::vector< std::string > 
 	}
 	return file_vector->size( ) + dir_vector->size( );
 }
+std::vector< std::string > cyl::tools::path::getPathDirRecursive( ) const {
+	std::vector< std::string > result;
+	if( std::filesystem::exists( currentPath ) && std::filesystem::is_directory( currentPath ) ) {
+		using directory_iterator = std::filesystem::recursive_directory_iterator;
+		directory_iterator directoryIterator( currentPath );
+		directory_iterator endIterator;
+		while( directoryIterator != endIterator ) {
+			auto absPath = std::filesystem::absolute( directoryIterator->path( ) ).string( );
+			if( directoryIterator->is_directory( ) )
+				result.emplace_back( absPath );
+			++directoryIterator;
+		}
+	}
+	return result;
+}
+std::vector< std::string > cyl::tools::path::getPathFileRecursive( ) const {
+	std::vector< std::string > result;
+	if( std::filesystem::exists( currentPath ) && std::filesystem::is_directory( currentPath ) ) {
+		using directory_iterator = std::filesystem::recursive_directory_iterator;
+		directory_iterator directoryIterator( currentPath );
+		directory_iterator endIterator;
+		while( directoryIterator != endIterator ) {
+			auto absPath = std::filesystem::absolute( directoryIterator->path( ) ).string( );
+			if( !directoryIterator->is_directory( ) )
+				result.emplace_back( absPath );
+			++directoryIterator;
+		}
+	}
+	return result;
+}
+std::vector< std::string > cyl::tools::path::getPathDir( ) const {
+	std::vector< std::string > result;
+	if( std::filesystem::exists( currentPath ) && std::filesystem::is_directory( currentPath ) ) {
+		using directory_iterator = std::filesystem::directory_iterator;
+		directory_iterator directoryIterator( currentPath );
+		directory_iterator endIterator;
+		while( directoryIterator != endIterator ) {
+			auto absPath = std::filesystem::absolute( directoryIterator->path( ) ).string( );
+			if( directoryIterator->is_directory( ) )
+				result.emplace_back( absPath );
+			++directoryIterator;
+		}
+	}
+	return result;
+}
+std::vector< std::string > cyl::tools::path::getPathFile( ) const {
+	std::vector< std::string > result;
+	if( std::filesystem::exists( currentPath ) && std::filesystem::is_directory( currentPath ) ) {
+		using directory_iterator = std::filesystem::directory_iterator;
+		directory_iterator directoryIterator( currentPath );
+		directory_iterator endIterator;
+		while( directoryIterator != endIterator ) {
+			auto absPath = std::filesystem::absolute( directoryIterator->path( ) ).string( );
+			if( !directoryIterator->is_directory( ) )
+				result.emplace_back( absPath );
+			++directoryIterator;
+		}
+	}
+	return result;
+}
 size_t cyl::tools::path::getPathDirAndFile( std::vector< std::string > *file_vector, std::vector< std::string > *dir_vector, bool is_cd_in_dir ) const {
 	if( is_cd_in_dir )
 		return getPathDirAndFileRecursive( file_vector, dir_vector );

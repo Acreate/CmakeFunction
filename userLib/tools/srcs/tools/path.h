@@ -130,6 +130,19 @@ public:
 	/// @param dir_vector 目录路径存储容器
 	/// @return  文件夹与文件的数量
 	size_t getPathDirAndFileRecursive( std::vector< std::string > *file_vector, std::vector< std::string > *dir_vector ) const;
+	/// @brief 获取路径的信息，返回该目录的路径列表-进入子目录
+	/// @return  文件夹
+	std::vector< std::string > getPathDirRecursive( ) const;
+	/// @brief 获取路径的信息，返回该文件的路径列表-进入子目录
+	/// @return  文件
+	std::vector< std::string > getPathFileRecursive( ) const;
+
+	/// @brief 获取路径的信息，返回该目录的路径列表
+	/// @return  文件夹
+	std::vector< std::string > getPathDir( ) const;
+	/// @brief 获取路径的信息，返回该文件的路径列表
+	/// @return  文件
+	std::vector< std::string > getPathFile( ) const;
 	/// @brief 获取路径的信息，返回该目录与文件的路径列表
 	/// @param file_vector 文件路径存储容器
 	/// @param dir_vector 目录路径存储容器
@@ -147,6 +160,27 @@ public:
 	/// @param is_cd_in_dir 是否进入子目录
 	/// @return  文件夹与文件的数量
 	size_t getPathDirAndFile( std::vector< std::string > *file_vector, std::vector< std::string > *dir_vector, bool is_cd_in_dir ) const;
+	/// @brief 获取文件名称
+	/// @return 文件名称
+	std::string getFileName( ) const {
+		return currentPath.filename( ).string( );
+	}
+	/// @brief 获取文件基本名称-去后缀
+	/// @return 基本类名称
+	std::string getFileBaseName( ) const {
+		auto fileName = this->getFileName( );
+		size_t findLastOf = fileName.find_last_of( "." );
+		if( findLastOf != std::string::npos )
+			fileName = fileName.substr( 0, findLastOf );
+		return fileName;
+	}
+	std::string getFileSuffix( ) const {
+		auto fileName = this->getFileName( );
+		size_t findLastOf = fileName.find_last_of( "." );
+		if( findLastOf != std::string::npos )
+			fileName = fileName.substr( findLastOf );
+		return fileName;
+	}
 };
 
 /**
