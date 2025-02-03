@@ -191,6 +191,11 @@ public:
 	const static cyl::tools::path current_relatively_path = cyl::tools::path::getCmakeSourceRelativelyPath(FILE)
 /**
  * @brief 定义当前项目名称宏
+ * @brief 需要导入 cmake 模板文件
+ * @brief
+ * @code
+ * #include <cmake_include_to_c_cpp_header_env.h>
+ * @endcode 
  */
 # define DEF_CURRENT_PROJECT_NAME(   ) const static std::string project_name = cmake_property_NAME
 #endif // PATH_H_H_HEAD__FILE__

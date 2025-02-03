@@ -15,26 +15,26 @@ string( JOIN " " jionResult ${resultList} )
 normal_project_name( result_name "${jionResult}" )
 set( prject_name ${result_name} )
 message( "============ ${prject_name}" )
-message( "name =" ${prject_name} )
-project( ${prject_name} )
+message( "name = " "${prject_name}" )
+project( "${prject_name}" )
 message( "============ ${CURRENT_FOLDER}" )
 
 add_library( ${PROJECT_NAME} SHARED )
 
 set( include_path "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 
-string( REPLACE "." "_" project_name_include_dir ${PROJECT_NAME} )
+string( REPLACE "." "_" project_name_include_dir "${prject_name}" )
 set( ${project_name_include_dir}_include_dir "${include_path}" "${include_path}" PARENT_SCOPE )
 
-set_target_bin_out_path_property( ${PROJECT_NAME} "${Project_Run_Bin_Path}" )
-set_target_static_lib_out_path_property( ${PROJECT_NAME} "${Project_Run_Static_Lib_Path}" )
-set_target_pdb_out_path_property( ${PROJECT_NAME} "${Project_Run_Pbd_Path}" )
+set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}" )
+set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}" )
+set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}" )
 
 string( SUBSTRING "${PROJECT_NAME}" 0 1 exportFileStartName )
 string( SUBSTRING "${PROJECT_NAME}" 1 -1 exportFileName )
 string( TOUPPER ${exportFileStartName} exportFileStartName )
 set( exportFileName "${CMAKE_CURRENT_SOURCE_DIR}/auto_generate_files/export/${exportFileStartName}${exportFileName}_export.h" )
-generate_export_header( ${PROJECT_NAME} EXPORT_FILE_NAME ${exportFileName} )
+generate_export_header( "${prject_name}" EXPORT_FILE_NAME ${exportFileName} )
 
 # 添加源文件
 target_include_directories( ${PROJECT_NAME} PUBLIC "${include_path}/srcs" ) # 加入头文件搜索路径
@@ -43,4 +43,4 @@ target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} )
 
 target_include_directories( ${PROJECT_NAME} PUBLIC ${include_path} )
 set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
-configure_temp_files( ${cmake_definitions_env_out} ${prject_name} )
+configure_temp_files( ${cmake_definitions_env_out} "${prject_name}" )

@@ -26,9 +26,9 @@ function( append_sub_directory_cmake_project_path path_dir_s )
         list( FIND _load_list "${absolutePath}" index )
 
         if( index EQUAL -1 AND IS_DIRECTORY "${absolutePath}" AND EXISTS "${absolutePath}" )
-            message( STATUS "正在添加路径 :\t" ${absolutePath} )
-            add_subdirectory( ${absolutePath} )
-            list( APPEND _load_list ${absolutePath} )
+            message( STATUS "正在添加路径 :\t" "${absolutePath}" )
+            add_subdirectory( "${absolutePath}" )
+            list( APPEND _load_list "${absolutePath}" )
         endif()
     endforeach()
 
