@@ -192,5 +192,5 @@ public:
 /**
  * @brief 定义当前项目名称宏
  */
-# define DEF_CURRENT_PROJECT_NAME(   ) const static std::string project_name = Cmake_Project_Name
+# define DEF_CURRENT_PROJECT_NAME(   ) const static std::string project_name = cmake_property_NAME
 #endif // PATH_H_H_HEAD__FILE__
