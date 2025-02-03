@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+
+
 # ## 设置程序输出位置
 function( set_target_BIN_out_path_property target_obj out_path )
     set_target_properties( ${target_obj} PROPERTIES
