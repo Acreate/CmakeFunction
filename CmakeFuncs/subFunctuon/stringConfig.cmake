@@ -31,3 +31,5 @@ function( string_splite result_list src_str target_str )
     list( APPEND spliteResult ${src_str} )
     set( ${${result_list}} ${spliteResult} PARENT_SCOPE )
 endfunction()
+
+message( "----\n\t\t调用:(${CMAKE_CURRENT_LIST_FILE}[${CMAKE_CURRENT_FUNCTION}]:${CMAKE_CURRENT_FUNCTION_LIST_LINE})行 ->\n\t\t\t消息:列表加载完毕" )

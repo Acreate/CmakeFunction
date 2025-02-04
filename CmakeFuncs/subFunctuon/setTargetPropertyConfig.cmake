@@ -1,7 +1,5 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
-
-
 # ## 设置程序输出位置
 function( set_target_BIN_out_path_property target_obj out_path )
     set_target_properties( "${target_obj}" PROPERTIES
@@ -65,3 +63,5 @@ function( set_target_WIN32_show_windows target_obj )
         set_target_properties( "${target_obj}" PROPERTIES WIN32_EXECUTABLE TRUE )
     endif()
 endfunction()
+
+message( "----\n\t\t调用:(${CMAKE_CURRENT_LIST_FILE}[${CMAKE_CURRENT_FUNCTION}]:${CMAKE_CURRENT_FUNCTION_LIST_LINE})行 ->\n\t\t\t消息:列表加载完毕" )

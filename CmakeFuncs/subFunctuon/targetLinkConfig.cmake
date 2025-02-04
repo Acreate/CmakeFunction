@@ -69,7 +69,6 @@ endfunction()
 # ## 配置指定目标的  glad 4.6 compatibility
 function( set_target_link_glad46compatibility_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-4-6.compatibility" )
-    include_path_package()
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
@@ -79,7 +78,6 @@ endfunction()
 # ## 配置指定目标的  glad 4.6 core
 function( set_target_link_glad46core_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-4-6.core" )
-    include_path_package()
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
@@ -89,21 +87,10 @@ endfunction()
 # ## 配置指定目标的 glad 3.3 core
 function( set_target_link_glad33core_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad-3-3.core" )
-    include_path_package()
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
     target_include_directories( "${target_obj}" PUBLIC "${absDir}/include" )
-endfunction()
-
-# ## 配置指定目标的 glad
-function( set_target_link_glad_lib target_obj )
-    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glad_noes_core" )
-
-    target_sources( "${target_obj}" PUBLIC "${root_path}/src/glad.c" )
-    target_include_directories( "${target_obj}" PUBLIC "${root_path}/include" )
-
-    # target_compile_definitions( "${target_obj}" PRIVATE GLFW_INCLUDE_NONE )
 endfunction()
 
 # ## 配置指定目标的 opencv4110
@@ -160,8 +147,6 @@ endfunction()
 
 # # 生成配置
 function( configure_all_target )
-    include_addSubdirectory_package()
-
     # # 获取全部目标
     get_in_cmakeFunction_call_load_sub_directory_project_list( _append_list )
 
@@ -581,3 +566,5 @@ function( configure_all_target )
         endif()
     endforeach()
 endfunction()
+
+message( "----\n\t\t调用:(${CMAKE_CURRENT_LIST_FILE}[${CMAKE_CURRENT_FUNCTION}]:${CMAKE_CURRENT_FUNCTION_LIST_LINE})行 ->\n\t\t\t消息:列表加载完毕" )

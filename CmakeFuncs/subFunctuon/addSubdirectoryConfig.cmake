@@ -1,16 +1,14 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
-# ## 配置指定目标的 用户 tools 库
+# ## 把工具库加入 cmake 项目内
 function( add_subdirectory_tools_lib )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools" )
     append_sub_directory_cmake_project_path( root_path )
 endfunction()
 
-# ## 配置指定目标的 用户 tools 库
+# ## 把测试库加入 cmake 项目内
 function( add_subdirectory_test_code_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../testCode/" )
-    include_string_package()
-    include_path_package()
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
     filter_path_repetition( list_result lib_list )
     append_sub_directory_cmake_project_path( list_result )
@@ -33,7 +31,15 @@ function( append_sub_directory_cmake_project_path path_dir_s )
     endforeach()
 
     # 重新配置列表
-    set_in_cmakeFunction_call_load_sub_directory_project_list( _load_list )
+    set( property_name "addend_sub_directory_list_property" )
+    get_property( _my_addend_sub_directory_list_is_define GLOBAL PROPERTY "${property_name}" DEFINED )
+
+    if( _my_addend_sub_directory_list_is_define )
+        set_property( GLOBAL PROPERTY "${property_name}" ${_load_list} )
+    else()
+        define_property( GLOBAL PROPERTY "${property_name}" )
+        set_property( GLOBAL PROPERTY "${property_name}" ${_load_list} )
+    endif()
 endfunction()
 
 # # 获取使用 append_sub_directory_cmake_project_path 加载子项目列表的项目路径列表
@@ -50,17 +56,4 @@ function( get_in_cmakeFunction_call_load_sub_directory_project_list result_list_
     define_property( GLOBAL PROPERTY "${property_name}" )
 endfunction()
 
-# # 获取使用 append_sub_directory_cmake_project_path 加载子项目列表的项目路径列表
-# # @param set_value_list : 列表变量名称，不能使用 ${set_value_list}
-function( set_in_cmakeFunction_call_load_sub_directory_project_list set_value_list )
-    set( property_name "addend_sub_directory_list_property" )
-    get_property( _my_addend_sub_directory_list_is_define GLOBAL PROPERTY "${property_name}" DEFINED )
-
-    if( _my_addend_sub_directory_list_is_define )
-        set_property( GLOBAL PROPERTY "${property_name}" ${${set_value_list}} )
-        return()
-    endif()
-
-    define_property( GLOBAL PROPERTY "${property_name}" )
-    set_property( GLOBAL PROPERTY "${property_name}" ${${set_value_list}} )
-endfunction()
+message( "----\n\t\t调用:(${CMAKE_CURRENT_LIST_FILE}[${CMAKE_CURRENT_FUNCTION}]:${CMAKE_CURRENT_FUNCTION_LIST_LINE})行 ->\n\t\t\t消息:列表加载完毕" )

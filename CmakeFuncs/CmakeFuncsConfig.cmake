@@ -48,4 +48,4 @@ include_string_package()
 include_targetLink_package()
 include_addSubdirectory_package()
 
-include_everything_package( test "${CMAKE_CURRENT_LIST_DIR}/subFunctuon" )
+
