@@ -49,6 +49,66 @@ cmake 功能合集
 
 ### addSubdirectoryConfig.cmake
 
+#### supper_cmake_builder_language( result_language_list_ )
+
+激活并且返回当前环境支持编译环境
+
+```cmake
+cmake_minimum_required( VERSION 3.19 )
+
+# # 加载模块
+find_package( CmakeFuncs REQUIRED PATHS "${CMAKE_CURRENT_SOURCE_DIR}/srcs/cmakeFuncs/CmakeFuncs" )
+
+# # 获取当前文件夹名称
+get_current_dir_name( prject_name ${CMAKE_CURRENT_SOURCE_DIR} )
+message( "============ ${prject_name}" )
+message( "name = " ${prject_name} ) # # 当前文件名配置为项目名称
+project( ${prject_name} )
+message( "============ ${CURRENT_FOLDER}" )
+
+set( CMAKE_C_STANDARD 17 )
+set( CMAKE_C_STANDARD_REQUIRED ON )
+set( CMAKE_C_VISIBILITY_PRESET hidden )
+
+set( CMAKE_CXX_STANDARD 23 )
+set( CMAKE_CXX_STANDARD_REQUIRED ON )
+set( CMAKE_CXX_VISIBILITY_PRESET hidden )
+
+supper_cmake_builder_language( _cmake_supper_language_list ) # # 语言支持列表
+```
+
+
+
+#### append_CXX_C_source_file_extensions( extension_list )
+
+添加 c 和 cpp 后缀名称
+
+```cmake
+cmake_minimum_required( VERSION 3.19 )
+
+## 加载模块
+find_package( CmakeFuncs REQUIRED PATHS "${CMAKE_CURRENT_SOURCE_DIR}/srcs/cmakeFuncs/CmakeFuncs" )
+
+## 获取当前文件夹名称
+get_current_dir_name( prject_name ${CMAKE_CURRENT_SOURCE_DIR} )
+message( "============ ${prject_name}" )
+message( "name = " ${prject_name} ) ## 当前文件名配置为项目名称
+project( ${prject_name} )
+message( "============ ${CURRENT_FOLDER}" )
+
+set( CMAKE_C_STANDARD 17 )
+set( CMAKE_C_STANDARD_REQUIRED ON )
+set( CMAKE_C_VISIBILITY_PRESET hidden )
+
+set( CMAKE_CXX_STANDARD 23 )
+set( CMAKE_CXX_STANDARD_REQUIRED ON )
+set( CMAKE_CXX_VISIBILITY_PRESET hidden )
+
+append_CXX_C_source_file_extensions( h hpp hc H HPP HC ) ## 追加后缀名
+```
+
+
+
 #### add_subdirectory_tools_lib()
 
 把工具库加入 cmake 项目内

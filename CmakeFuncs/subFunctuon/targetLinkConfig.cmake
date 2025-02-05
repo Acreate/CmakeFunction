@@ -93,6 +93,19 @@ function( set_target_link_glad33core_lib target_obj )
     target_include_directories( "${target_obj}" PUBLIC "${absDir}/include" )
 endfunction()
 
+# ## 配置指定目标的 stb_image-2025.02.05
+function( set_target_link_stb_2025_02_05_lib target_obj )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/stb-2025.02.05" )
+    get_absolute_path( absDir ${root_path} )
+    file( GLOB c_source "${absDir}/*.c")
+    target_sources( "${target_obj}" PRIVATE ${c_source} )
+    file( GLOB cpp_source "${absDir}/*.cpp")
+    target_sources( "${target_obj}" PRIVATE ${cpp_source} )
+    file( GLOB head_source "${absDir}/*.h")
+    target_sources( "${target_obj}" PRIVATE ${head_source} )
+    target_include_directories( "${target_obj}" PUBLIC "${absDir}" )
+endfunction()
+
 # ## 配置指定目标的 opencv4110
 function( set_target_link_opencv4110_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/opencv-4.11.0/build" )
@@ -150,6 +163,8 @@ function( configure_all_target )
     # # 获取全部目标
     get_in_cmakeFunction_call_load_sub_directory_project_list( _append_list )
 
+    set( config_list )
+
     # # 遍历目标
     foreach( sub_load_cmake_dir_path ${_append_list} )
         get_property( target_obj DIRECTORY "${sub_load_cmake_dir_path}" PROPERTY BUILDSYSTEM_TARGETS )
@@ -158,6 +173,17 @@ function( configure_all_target )
             continue()
         endif()
 
+        # # 是否存在配置路径
+        get_target_property( user_configure_path "${target_obj}" "user_current_configure_path" )
+
+        # # 存在配置路径，则开始配置
+        if( user_configure_path )
+            list( APPEND cmake_all_target_obj_config_list "${target_obj}" )
+        endif()
+    endforeach()
+
+    # # 遍历目标
+    foreach( target_obj ${cmake_all_target_obj_config_list} )
         # # 是否存在配置路径
         get_target_property( user_configure_path "${target_obj}" "user_current_configure_path" )
 
@@ -530,15 +556,36 @@ function( configure_all_target )
             get_target_property( cmake_property_working_directory "${target_obj}" WORKING_DIRECTORY )
             get_target_property( cmake_property_sources "${target_obj}" SOURCES )
 
-            set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
-            configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h.in" "${user_configure_path}/cmake_to_c_cpp_header_env.h" ) # # 项目信息
-            configure_file( "${rootPath}/cmake_property_to_c_cpp_header_env.h.in" "${user_configure_path}/cmake_property_to_c_cpp_header_env.h" ) # # 项目信息
-            configure_file( "${rootPath}/cmake_value_to_c_cpp_header_env.h.in" "${user_configure_path}/cmake_value_to_c_cpp_header_env.h" ) # # 项目信息
+            # define Builder_Tools_Clang ${Clang} // 使用 clang 编译器
+            # define Builder_Tools_GNU ${GNU} // 使用 gnu 编译器
+            # define Builder_Tools_MSVC ${MSVC} // 使用 msvc 编译器
+            if( Clang )
+                set( Builder_Tools_Clang true )
+            else()
+                set( Builder_Tools_Clang false )
+            endif()
 
-            get_path_files( head_file_list "${user_configure_path}" )
+            if( GNU )
+                set( Builder_Tools_GNU true )
+            else()
+                set( Builder_Tools_GNU false )
+            endif()
+
+            if( MSVC )
+                set( Builder_Tools_MSVC true )
+            else()
+                set( Builder_Tools_MSVC false )
+            endif()
+
+            set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
+
+            # configure_file( "${rootPath}/cmake_to_c_cpp_header_env.h" "${user_configure_path}/cmake_to_c_cpp_header_env.h" ) # # 项目信息
+            # configure_file( "${rootPath}/cmake_property_to_c_cpp_header_env.h" "${user_configure_path}/cmake_property_to_c_cpp_header_env.h" ) # # 项目信息
+            # configure_file( "${rootPath}/cmake_value_to_c_cpp_header_env.h" "${user_configure_path}/cmake_value_to_c_cpp_header_env.h" ) # # 项目信息
+            get_path_files( head_file_list "${rootPath}" )
             set( head_file_name_list ) # # 基本名称
             set( c_head_macro "CMAKE_INCLUDE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__" )
-            set( head_file_context "\n\
+            set( head_file_context "\
 #ifndef ${c_head_macro}\n\
 #define ${c_head_macro}\n\
 #pragma once\n" )
@@ -556,12 +603,14 @@ function( configure_all_target )
                 list( APPEND head_file_name_list ${fileName} )
                 set( head_file_context "${head_file_context}\
 #include \"${fileName}\"\n" )
+                configure_file( "${rootPath}/${fileName}" "${user_configure_path}/${fileName}" )
+                target_sources( "${target_obj}" PRIVATE "${user_configure_path}/${fileName}" )
             endforeach()
 
             set( head_file_context "${head_file_context}\n\
-#endif // ${c_head_macro}\n\n\n
-" )
+#endif // ${c_head_macro}\n" )
             file( WRITE "${user_configure_path}/${write_file_name}" "${head_file_context}" )
+            target_sources( "${target_obj}" PRIVATE "${user_configure_path}/${write_file_name}" )
             target_include_directories( "${target_obj}" PRIVATE "${user_configure_path}" )
         endif()
     endforeach()
