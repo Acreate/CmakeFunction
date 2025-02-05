@@ -117,13 +117,44 @@ append_CXX_C_source_file_extensions( h hpp hc H HPP HC ) ## 追加后缀名
 
 把测试库加入 cmake 项目内
 
-#### append_sub_directory_cmake_project_path( path_dir_s )
+#### append_sub_directory_cmake_project_path_list( path_dir_s )
 
 把列表当中的所有项目都加入到 cmake 项目内
 
 必须保证该路径存在可用的 CMakeLists.txt 文件
 
 该功能提供更多的工具帮助
+
+path_dir_s 为列表
+
+```cmake
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools" )
+    append_sub_directory_cmake_project_path_list( root_path )
+```
+
+```cmake
+	## 非法操作，请使用 append_sub_directory_cmake_project_path_s( path_dir_s )
+	append_sub_directory_cmake_project_path_s( "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools"  )
+```
+
+
+
+#### append_sub_directory_cmake_project_path_s( path_dir_s )
+
+增加路径列表到项目
+
+path_dir_s 为路径列表，并非数组
+
+```cmake
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools" )
+    append_sub_directory_cmake_project_path_s( ${root_path} )
+```
+
+```cmake
+    append_sub_directory_cmake_project_path_s( "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools"  )
+```
+
+
 
 #### get_in_cmakeFunction_call_load_sub_directory_project_list( result_list_ )
 

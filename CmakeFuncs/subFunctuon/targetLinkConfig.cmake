@@ -2,7 +2,11 @@
 
 # ## 配置指定目标的 soil2
 function( set_target_link_glm_lib target_obj )
-    target_include_directories( "${target_obj}" PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glm-1.0.1-light" )
+    set( glm_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glm-1.0.1-light" )
+    get_filename_component( glm_abs "${glm_root}" ABSOLUTE )
+    target_include_directories( "${target_obj}" PUBLIC "${glm_abs}" )
+    file( GLOB_RECURSE source_list "${glm_abs}/*.c" "${glm_abs}/*.cpp" "${glm_abs}/*.h" "${glm_abs}/*.hpp" )
+    target_sources( ${target_obj} INTERFACE ${source_list} )
 endfunction()
 
 # ## 配置指定目标的 soil2
@@ -97,11 +101,11 @@ endfunction()
 function( set_target_link_stb_2025_02_05_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/stb-2025.02.05" )
     get_absolute_path( absDir ${root_path} )
-    file( GLOB c_source "${absDir}/*.c")
+    file( GLOB c_source "${absDir}/*.c" )
     target_sources( "${target_obj}" PRIVATE ${c_source} )
-    file( GLOB cpp_source "${absDir}/*.cpp")
+    file( GLOB cpp_source "${absDir}/*.cpp" )
     target_sources( "${target_obj}" PRIVATE ${cpp_source} )
-    file( GLOB head_source "${absDir}/*.h")
+    file( GLOB head_source "${absDir}/*.h" )
     target_sources( "${target_obj}" PRIVATE ${head_source} )
     target_include_directories( "${target_obj}" PUBLIC "${absDir}" )
 endfunction()
