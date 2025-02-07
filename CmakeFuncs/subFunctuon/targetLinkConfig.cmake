@@ -48,6 +48,37 @@ function( set_target_link_glfw3_lib target_obj )
     )
 endfunction()
 
+# ## 配置指定目标的 imgui 中的 glfw3 环境
+function( set_target_link_imgui_at_glfw3_lib target_obj )
+    set( imgui_at_glfw3_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/imgui-1.91.7/" )
+    get_filename_component( imgui_at_glfw3_root "${imgui_at_glfw3_root}" ABSOLUTE )
+    target_include_directories( "${target_obj}" PUBLIC "${imgui_at_glfw3_root}" )
+    file( GLOB file_list "${imgui_at_glfw3_root}/*.c" "${imgui_at_glfw3_root}/*.cpp" "${imgui_at_glfw3_root}/*.h" "${imgui_at_glfw3_root}/*.hpp" )
+
+    set( source_list )
+
+    get_filename_component( absFilePathName "${imgui_at_glfw3_root}/backends/imgui_impl_opengl3.cpp" ABSOLUTE )
+
+    if( EXISTS "${absFilePathName}" )
+        list( APPEND source_list "${absFilePathName}" )
+    endif()
+
+    get_filename_component( absFilePathName "${imgui_at_glfw3_root}/backends/imgui_impl_glfw.cpp" ABSOLUTE )
+
+    if( EXISTS "${absFilePathName}" )
+        list( APPEND source_list "${absFilePathName}" )
+    endif()
+
+    foreach( file_name ${file_list} )
+        if( EXISTS "${file_name}" )
+            get_filename_component( absFilePathName "${file_name}" ABSOLUTE )
+            list( APPEND source_list "${file_name}" )
+        endif()
+    endforeach()
+
+    target_sources( ${target_obj} PUBLIC ${source_list} )
+endfunction()
+
 # ## 配置指定目标的 glut3
 function( set_target_link_freeglut3_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/freeglut-3.6.0/x64" )
