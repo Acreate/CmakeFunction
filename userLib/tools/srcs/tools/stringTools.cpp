@@ -27,7 +27,7 @@
 //	result_str = std::string( buff.data( ), buff.size( ) );
 //	return conver_str.size( );
 //}
-size_t cyl::tools::stringTools::converString( const ToolsString &wstr, std::string *result ) {
+size_t cyl::tools::stringTools::converString( const std::wstring &wstr, std::string *result ) {
 	std::string strLocale = setlocale( LC_ALL, "" );
 	const wchar_t *wchSrc = wstr.c_str( );
 	size_t nDestSize = wcstombs( NULL, wchSrc, 0 ) + 1;
@@ -39,7 +39,7 @@ size_t cyl::tools::stringTools::converString( const ToolsString &wstr, std::stri
 	setlocale( LC_ALL, strLocale.c_str( ) );
 	return nDestSize;
 }
-size_t cyl::tools::stringTools::converString( const std::string &mbs, cyl::tools::ToolsString *result ) {
+size_t cyl::tools::stringTools::converString( const std::string &mbs, std::wstring *result ) {
 	std::string strLocale = setlocale( LC_ALL, "" );
 	const char *chSrc = mbs.c_str( );
 	size_t nDestSize = mbstowcs( NULL, chSrc, 0 ) + 1;
@@ -51,38 +51,38 @@ size_t cyl::tools::stringTools::converString( const std::string &mbs, cyl::tools
 	setlocale( LC_ALL, strLocale.c_str( ) );
 	return nDestSize;
 }
-cyl::tools::ToolsString cyl::tools::stringTools::toUpper( const ToolsString &conver_tools_string ) {
+std::wstring cyl::tools::stringTools::toUpper( const std::wstring &conver_tools_string ) {
 	auto strPtr = conver_tools_string.c_str( );
 	auto len = conver_tools_string.length( );
-	std::vector< ToolsString::value_type > data( len );
+	std::vector< std::wstring::value_type > data( len );
 	auto index = 0;
 	auto dataPtr = data.data( );
 	for( ; index < len; ++index )
 		dataPtr[ index ] = std::towupper( strPtr[ index ] );
-	return ToolsString( dataPtr, index );
+	return std::wstring( dataPtr, index );
 }
-cyl::tools::ToolsString cyl::tools::stringTools::toLower( const ToolsString &conver_tools_string ) {
+std::wstring cyl::tools::stringTools::toLower( const std::wstring &conver_tools_string ) {
 	auto strPtr = conver_tools_string.c_str( );
 	auto len = conver_tools_string.length( );
-	std::vector< ToolsString::value_type > data( len );
+	std::vector< std::wstring::value_type > data( len );
 	auto index = 0;
 	auto dataPtr = data.data( );
 	for( ; index < len; ++index )
 		dataPtr[ index ] = std::towlower( strPtr[ index ] );
-	return ToolsString( dataPtr, index );
+	return std::wstring( dataPtr, index );
 }
 
-cyl::tools::ToolsString cyl::tools::stringTools::replaceSubString( const CharValueType *org_str, const size_t org_str_len, const CharValueType *replace_src_str, const size_t replace_src_str_len, const CharValueType *replace_target_str, const size_t replace_target_str_len, size_t replace_count ) {
+std::wstring cyl::tools::stringTools::replaceSubString( const std::wstring::value_type *org_str, const size_t org_str_len, const std::wstring::value_type *replace_src_str, const size_t replace_src_str_len, const std::wstring::value_type *replace_target_str, const size_t replace_target_str_len, size_t replace_count ) {
 	if( replace_count == 0 )
 		return org_str;
 	std::wstringstream ss; // 流字符串对象
 	if( org_str_len > 0 && replace_src_str_len > 0 ) { // 需要原始字符串与匹配长度都大于 0
 		size_t buffLen = 1024; // 缓冲大小
-		CharValueType *buff = new CharValueType[ buffLen ]; // 缓冲
+		std::wstring::value_type *buff = new std::wstring::value_type[ buffLen ]; // 缓冲
 		size_t buffIndex = 0; // 缓冲下标
 		size_t orgStrIndex = 0; // 原始字符串访问下标
 		while( orgStrIndex < org_str_len ) { // 遍历
-			CharValueType refChar = org_str[ orgStrIndex ];
+			std::wstring::value_type refChar = org_str[ orgStrIndex ];
 			if( refChar == replace_src_str[ 0 ] ) {
 				size_t replaceStrIndex = 1; // 匹配字符串长度下标
 				if( replaceStrIndex < replace_src_str_len )
@@ -121,15 +121,15 @@ cyl::tools::ToolsString cyl::tools::stringTools::replaceSubString( const CharVal
 
 	return ss.str( );
 }
-cyl::tools::ToolsString cyl::tools::stringTools::replaceSubString( const CharValueType *org_str, const size_t org_str_len, const CharValueType *replace_src_str, const size_t replace_src_str_len, const CharValueType *replace_target_str, const size_t replace_target_str_len ) {
+std::wstring cyl::tools::stringTools::replaceSubString( const std::wstring::value_type *org_str, const size_t org_str_len, const std::wstring::value_type *replace_src_str, const size_t replace_src_str_len, const std::wstring::value_type *replace_target_str, const size_t replace_target_str_len ) {
 	std::wstringstream ss; // 流字符串对象
 	if( org_str_len > 0 && replace_src_str_len > 0 ) { // 需要原始字符串与匹配长度都大于 0
 		size_t buffLen = 1024; // 缓冲大小
-		CharValueType *buff = new CharValueType[ buffLen ]; // 缓冲
+		std::wstring::value_type *buff = new std::wstring::value_type[ buffLen ]; // 缓冲
 		size_t buffIndex = 0; // 缓冲下标
 		size_t orgStrIndex = 0; // 原始字符串访问下标
 		while( orgStrIndex < org_str_len ) { // 遍历
-			CharValueType refChar = org_str[ orgStrIndex ];
+			std::wstring::value_type refChar = org_str[ orgStrIndex ];
 			if( refChar == replace_src_str[ 0 ] ) {
 				size_t replaceStrIndex = 1; // 匹配字符串长度下标
 				if( replaceStrIndex < replace_src_str_len )
@@ -163,7 +163,7 @@ cyl::tools::ToolsString cyl::tools::stringTools::replaceSubString( const CharVal
 
 	return ss.str( );
 }
-cyl::tools::ToolsString cyl::tools::stringTools::replaceSubStringOnLast( ToolsString org_str, ToolsString replace_src_str, ToolsString replace_target_str, size_t replace_count ) {
+std::wstring cyl::tools::stringTools::replaceSubStringOnLast( std::wstring org_str, std::wstring replace_src_str, std::wstring replace_target_str, size_t replace_count ) {
 	std::reverse( org_str.begin( ), org_str.end( ) ); // 重新逆转
 	std::reverse( replace_src_str.begin( ), replace_src_str.end( ) ); // 重新逆转
 	std::reverse( replace_target_str.begin( ), replace_target_str.end( ) ); // 重新逆转
@@ -224,7 +224,7 @@ std::wstring cyl::tools::stringTools::removeAllSpaceChar( const std::wstring &co
 	for( ; index < len; ++index )
 		if( !isSpace( strPtr[ index ] ) )
 			dataPtr[ dataIndex++ ] = strPtr[ index ];
-	return ToolsString( dataPtr, dataIndex );
+	return std::wstring( dataPtr, dataIndex );
 }
 std::wstring cyl::tools::stringTools::removeLeftSpaceChar( const std::wstring &conver_tools_string ) {
 	auto strPtr = conver_tools_string.c_str( );

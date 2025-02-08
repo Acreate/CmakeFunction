@@ -16,10 +16,6 @@ namespace cyl {
 		class CMAKEFUNCS_USERLIB_TOOLS_EXPORT time;
 		/// @brief 字符串工具类
 		namespace stringTools { }
-		/// @brief 工具类字符串
-		using ToolsString = std::wstring;
-		/// @brief 字符类型
-		using CharValueType = ToolsString::value_type;
 	}
 
 }
