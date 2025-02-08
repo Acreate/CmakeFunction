@@ -16,6 +16,46 @@ function( printf_cmake_out )
     message( "QT_QMAKE_EXECUTABLE = ${QT_QMAKE_EXECUTABLE}" )
 endfunction()
 
+function( qt_generate_deploy_cmake_script_inatll_job _out_deploy_script_job_path target_obj )
+    if( qt_FOUND EQUAL 0 )
+        message( "未成功初始化该模块，请定义 Qt6_DIR 后在初始化模块" )
+        return()
+    endif()
+
+    get_target_property( projectType "${target_obj}" TYPE )
+
+    if( "${projectType}" STREQUAL "EXECUTABLE" )
+        get_target_property( Project_Run_Bin_Path "${target_obj}" RUNTIME_OUTPUT_DIRECTORY )
+        message( "生成 [可自行文件] 路径 = ${Project_Run_Bin_Path}" )
+    else()
+        get_target_property( Project_Run_Bin_Path "${target_obj}" LIBRARY_OUTPUT_DIRECTORY )
+        message( "生成 [动态库] 路径 = ${Project_Run_Bin_Path}" )
+    endif()
+
+    # App bundles on macOS have an .app suffix
+    if( APPLE )
+        set( executable_path "$<TARGET_FILE_NAME:${target_obj}>.app" )
+    else()
+        set( executable_path "${Project_Run_Bin_Path}/$<TARGET_FILE_NAME:${target_obj}>" )
+    endif()
+
+    qt_generate_deploy_script(
+        TARGET ${target_obj}
+        OUTPUT_SCRIPT deploy_script
+        CONTENT "
+qt_deploy_runtime_dependencies(
+    EXECUTABLE \"${executable_path}\"
+	PLUGINS_DIR \"${Project_Run_Bin_Path}\"
+	LIB_DIR \"${Project_Run_Bin_Path}\"
+	BIN_DIR \"${Project_Run_Bin_Path}\"
+)
+message( \"打包程序 : ${executable_path}\" )
+" )
+
+    install( SCRIPT ${deploy_script} )
+    set( ${_out_deploy_script_job_path} ${deploy_script} PARENT_SCOPE )
+endfunction()
+
 if( NOT Qt6_DIR )
     message( "未定义 Qt6_DIR 退出检测" )
     return()
