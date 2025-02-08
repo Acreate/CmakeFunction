@@ -12,7 +12,16 @@ endfunction()
 # # src_str 被切分的源字符串
 # # target_str 被切分的匹配字符串
 function( string_splite result_list src_str target_str )
+    if( NOT src_str OR NOT target_str )
+        return()
+    endif()
+
     set( spliteResult )
+    string( LENGTH ${src_str} _strLen )
+
+    if( _strLen EQUAL 0 )
+        return()
+    endif()
 
     while( true )
         string( FIND ${src_str} ${target_str} resultIndex )
@@ -25,11 +34,18 @@ function( string_splite result_list src_str target_str )
         list( APPEND spliteResult ${subResult} )
         math( EXPR resultIndex "${resultIndex}+1" OUTPUT_FORMAT DECIMAL )
         string( SUBSTRING ${src_str} ${resultIndex} -1 subResult )
+
+        string( LENGTH ${src_str} _strLen )
+
+        if( _strLen EQUAL 0 )
+            break()
+        endif()
+
         set( src_str ${subResult} )
     endwhile()
 
     list( APPEND spliteResult ${src_str} )
-    set( ${${result_list}} ${spliteResult} PARENT_SCOPE )
+    set( ${result_list} ${spliteResult} PARENT_SCOPE )
 endfunction()
 
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
@@ -39,7 +55,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 

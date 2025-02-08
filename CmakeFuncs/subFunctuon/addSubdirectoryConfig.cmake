@@ -107,14 +107,34 @@ macro( append_CXX_C_source_file_extensions extension_list )
         return()
     endif()
 
+    check_language( C )
+    check_language( CXX )
+
+    if( NOT CMAKE_CXX_COMPILER AND NOT CMAKE_C_COMPILER )
+        message( "\t\t!!! 当前 cmake 环境并不支持 C/C++ ，请重新检查开发环境" )
+        return()
+    endif()
+
     foreach( extension ${ARGV} )
-        list( APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS "${extension}" )
-        list( APPEND CMAKE_C_SOURCE_FILE_EXTENSIONS "${extension}" )
+        if( CMAKE_CXX_COMPILER )
+            list( APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS "${extension}" )
+        endif()
+
+        if( CMAKE_C_COMPILER )
+            list( APPEND CMAKE_C_SOURCE_FILE_EXTENSIONS "${extension}" )
+        endif()
     endforeach()
 
     message( "================== 当前后缀" )
-    message( "\t\tCMAKE_CXX_SOURCE_FILE_EXTENSIONS=${CMAKE_CXX_SOURCE_FILE_EXTENSIONS}" )
-    message( "\t\tCMAKE_C_SOURCE_FILE_EXTENSIONS=${CMAKE_C_SOURCE_FILE_EXTENSIONS}" )
+
+    if( CMAKE_CXX_COMPILER )
+        message( "\t\tCMAKE_CXX_SOURCE_FILE_EXTENSIONS=${CMAKE_CXX_SOURCE_FILE_EXTENSIONS}" )
+    endif()
+
+    if( CMAKE_C_COMPILER )
+        message( "\t\tCMAKE_C_SOURCE_FILE_EXTENSIONS=${CMAKE_C_SOURCE_FILE_EXTENSIONS}" )
+    endif()
+
     message( "==================" )
 endmacro()
 
@@ -125,8 +145,8 @@ function( add_subdirectory_tools_lib )
 endfunction()
 
 # ## 把测试库加入 cmake 项目内
-function( add_subdirectory_test_code_project )
-    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../testCode/" )
+function( add_subdirectory_code_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
     filter_path_repetition( list_result lib_list )
     append_sub_directory_cmake_project_path_list( list_result )
@@ -209,7 +229,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 

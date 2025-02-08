@@ -35,19 +35,17 @@ function( include_targetLink_package )
     endif()
 endfunction()
 
-# ## 包含 指定 模块
-function( include_everything_package package_name package_path )
-    if( NOT ${package_name}_FOUND )
-        find_package( ${package_name} REQUIRED PATHS "${package_path}" GLOBAL )
-    endif()
-endfunction()
+# ## 包含 targetLink 模块
+macro( include_qt_package )
+    find_package( qt REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}/subFunctuon" )
+endmacro()
 
 include_path_package()
 include_setTargetProperty_package()
 include_string_package()
 include_targetLink_package()
 include_addSubdirectory_package()
-
+include_qt_package()
 
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
 string( FIND "${abs}" "${CMAKE_HOME_DIRECTORY}" index )
@@ -56,7 +54,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 

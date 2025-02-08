@@ -202,6 +202,7 @@ function( get_cmake_separator result_path_sep )
     set( ${result_path_sep} "${resultSep}" PARENT_SCOPE )
 endfunction()
 
+# # 获取所有文件
 function( get_path_files result_file_list get_path )
     set( result_list )
 
@@ -244,16 +245,18 @@ function( get_path_files result_file_list get_path )
     set( ${result_file_list} ${result_list} PARENT_SCOPE )
 endfunction()
 
+# # 获取所有文件夹
 function( get_path_dirs result_dir_list get_path )
     set( result_list )
 
-    foreach( pathItem ${${result_file_list}} )
+    foreach( pathItem ${${result_dir_list}} )
         get_filename_component( result_abs_path "${pathItem}" ABSOLUTE ) # 全路径
-        list( FIND result_list ${result_abs_path} find_index )
 
         if( NOT EXISTS ${result_abs_path} )
             continue()
         endif()
+
+        list( FIND result_list ${result_abs_path} find_index )
 
         if( IS_DIRECTORY ${result_abs_path} )
             if( find_index EQUAL -1 ) # # 找不到重复，则加入路径
@@ -285,6 +288,42 @@ function( get_path_dirs result_dir_list get_path )
     set( ${result_dir_list} ${result_list} PARENT_SCOPE )
 endfunction()
 
+# # 获取路径作为项目名称
+# # 后缀参数作为下标 - get_current_path_name_to_project_name( result_name -4 -3 -2 )
+# # - 获取当前路径的 最后 第四个-第三个-第二个 作为合法名称返回
+function( get_current_path_name_to_project_name _result_project_name )
+    get_filename_component( absFilePath "${CMAKE_CURRENT_LIST_DIR}" ABSOLUTE )
+    get_cmake_separator( cmake_sep_char_ )
+    string_splite( result_list ${absFilePath} ${cmake_sep_char_} )
+    list( GET result_list ${ARGN} resultList )
+    string( JOIN " " jionResult ${resultList} )
+    normal_project_name( result_name "${jionResult}" )
+    set( ${_result_project_name} ${result_name} PARENT_SCOPE ) # 返回
+endfunction()
+
+# ## 在目录中查找目录，并且在目标目录中找到 file_name 的文件名
+# ## 若存在，则返回所在目录的路径
+# ## 文件名不区分大小写
+function( find_file_name _out_list check_path_dir file_name )
+    set( for_each_list_dirs ${${_out_list}} )
+
+    if( IS_DIRECTORY "${check_path_dir}" AND EXISTS "${check_path_dir}" )
+        get_path_dirs( dirs_ "${check_path_dir}" )
+
+        foreach( current_path_file ${dirs_} )
+            set( checkPath "${current_path_file}/${file_name}" )
+
+            if( EXISTS "${checkPath}" )
+                get_filename_component( absPath "${current_path_file}" ABSOLUTE )
+                list( APPEND for_each_list_dirs "${absPath}" )
+            endif()
+        endforeach()
+
+        filter_path_repetition( list_result for_each_list_dirs )
+        set( ${_out_list} ${list_result} PARENT_SCOPE )
+    endif()
+endfunction()
+
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
 string( FIND "${abs}" "${CMAKE_HOME_DIRECTORY}" index )
 
@@ -292,7 +331,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 

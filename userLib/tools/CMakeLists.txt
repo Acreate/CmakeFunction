@@ -1,12 +1,23 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
-set( CMAKE_C_STANDARD 99 )
+set( CMAKE_C_STANDARD 17 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
 set( CMAKE_C_VISIBILITY_PRESET hidden )
+set( CMAKE_C_EXTENSIONS ON )
 
 set( CMAKE_CXX_STANDARD 23 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 set( CMAKE_CXX_VISIBILITY_PRESET hidden )
+set( CMAKE_CXX_EXTENSIONS ON )
+
+supper_cmake_builder_language( _cmake_supper_language_list ) # # 语言支持列表
+
+include( GenerateExportHeader )
+include( GNUInstallDirs )
+
+append_CXX_C_source_file_extensions( h hpp hc H HPP HC ) # # 追加后缀名
+
+get_cmake_separator( cmake_sep_char )
 
 get_absolute_path( absFilePath ${CMAKE_CURRENT_LIST_FILE} )
 string_splite( result_list ${absFilePath} ${cmake_sep_char} )
