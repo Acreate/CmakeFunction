@@ -1,9 +1,34 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+# # 检测列表是否已经被定义，不被定义返回 FALSE
+# # result_ 返回值
+# # _CHECK_CMAKE_VALUE_ 检测列表，允许多个
+function( check_value_is_define result_ )
+    set( OPTIONAL )
+    set( oneValueArgs )
+    set( multiValueArgs _CHECK_CMAKE_VALUE_ )
+    cmake_parse_arguments( PARSE_ARGV 1 arg "${options}" "${oneValueArgs}" "${multiValueArgs}" )
+    set( error_list )
+
+    foreach( item ${arg__CHECK_CMAKE_VALUE_} )
+        if( DEFINED item AND ${item} )
+            continue()
+        endif()
+
+        list( APPEND error_list ${item} )
+    endforeach()
+
+    list( LENGTH error_list len )
+
+    if( len EQUAL 0 )
+        unset( ${result_} PARENT_SCOPE )
+    else()
+        set( ${result_} ${error_list} PARENT_SCOPE )
+    endif()
+endfunction()
+
 # # 添加支持语言
 function( supper_cmake_builder_language result_language_list_ )
-    include( CheckLanguage ) # # 加载 check_language 函数
-
     check_language( Fortran )
     set( supper_language_list )
 
@@ -98,6 +123,39 @@ function( supper_cmake_builder_language result_language_list_ )
 
     message( "================== 支持语言\n\t\t ${supper_language_list}\n==================" )
     set( ${result_language_list_} ${supper_language_list} PARENT_SCOPE )
+endfunction()
+
+# # 添加指定开发环境的源码后缀
+function( append_source_file_extensions extension_list )
+    if( NOT PROJECT_NAME )
+        message( FATAL_ERROR "需要先配置项目，否则该能容无法使用" )
+        return()
+    endif()
+
+    set( OPTIONAL )
+    set( oneValueArgs )
+    set( multiValueArgs LANGUAGES SUFFIXS )
+    cmake_parse_arguments( PARSE_ARGV 0 arg "${options}" "${oneValueArgs}" "${multiValueArgs}" )
+
+    foreach( language ${arg_LANGUAGES} )
+        check_language( ${language} )
+
+        if( NOT CMAKE_${language}_COMPILER )
+            message( "不支持 ${language} 开发环境，请重新检查" )
+            continue()
+        endif()
+
+        message( "================== 当前后缀 ${language}" )
+
+        foreach( extension ${arg_SUFFIXS} )
+            list( APPEND CMAKE_${language}_SOURCE_FILE_EXTENSIONS "${extension}" )
+        endforeach()
+
+        set( CMAKE_${language}_SOURCE_FILE_EXTENSIONS ${CMAKE_${language}_SOURCE_FILE_EXTENSIONS} PARENT_SCOPE )
+
+        message( "\t\tCMAKE_${language}_SOURCE_FILE_EXTENSIONS=${CMAKE_${language}_SOURCE_FILE_EXTENSIONS}" )
+        message( "==================" )
+    endforeach()
 endfunction()
 
 # # 添加 C CPP 后缀
@@ -207,6 +265,8 @@ function( append_sub_directory_cmake_project_path_list path_dir_s )
         set_property( GLOBAL PROPERTY "${property_name}" ${_load_list} )
     endif()
 endfunction()
+
+include( CheckLanguage )
 
 # # 获取使用 append_sub_directory_cmake_project_path 加载子项目列表的项目路径列表
 function( get_in_cmakeFunction_call_load_sub_directory_project_list result_list_ )

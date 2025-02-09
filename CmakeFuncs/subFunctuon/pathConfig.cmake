@@ -35,6 +35,45 @@ function( get_path_cmake_dir_path out_list check_path_dir file_name )
     endif()
 endfunction()
 
+# # 查找指定路径的源码文件
+# # out_file_list : 返回值
+# # PATH : 指定单个路径
+# # LANGUAGES : 查找的编程语言
+# # SUFFIX : 追加的后缀。可以多个
+function( get_path_sources out_file_list )
+    set( OPTIONAL )
+    set( oneValueArgs )
+    set( multiValueArgs LANGUAGES SUFFIXS PATHS )
+    cmake_parse_arguments( arg "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+    set( for_each_list_dirs ${${out_file_list}} )
+
+    foreach( language ${arg_LANGUAGES} )
+        check_language( ${language} )
+
+        if( NOT CMAKE_${language}_COMPILER )
+            message( "不支持 ${language} 开发环境，请重新检查" )
+            continue()
+        endif()
+
+        foreach( all_suffix ${CMAKE_${language}_SOURCE_FILE_EXTENSIONS} )
+            list( APPEND arg_SUFFIXS "${all_suffix}" )
+        endforeach()
+    endforeach()
+
+    foreach( satrt_path ${arg_PATHS} )
+        foreach( arg_suffix ${arg_SUFFIXS} )
+            string_splite( _splite_list "${arg_suffix}" "." )
+            list( GET _splite_list -1 _result_suffix )
+            list( APPEND suffix "${satrt_path}/*.${_result_suffix}" )
+        endforeach()
+    endforeach()
+
+    file( GLOB_RECURSE for_each_file_list ${suffix} )
+
+    set( ${out_file_list} ${for_each_file_list} PARENT_SCOPE )
+endfunction()
+
 # # 查找指定路径的 *.cpp *.c *.hpp *.h 文件
 # # check_path : 路径
 # # out_file_list : 返回值
@@ -62,26 +101,6 @@ function( get_path_cxx_and_c_sources out_file_list check_path )
     endforeach()
 
     file( GLOB_RECURSE for_each_file_list ${suffix} )
-
-    set( ${out_file_list} ${for_each_file_list} PARENT_SCOPE )
-endfunction()
-
-# ## 查找匹配拓展名的文件
-# ## check_path : 检查路径
-# ## find_expansion : 拓展名列表
-# ## out_file_list : 返回输出
-function( get_path_sources check_path find_expansion out_file_list )
-    set( for_each_list_dirs ${${out_file_list}} )
-
-    foreach( types_name ${find_expansion} )
-        # message( "检测源码路径 : ${check_path}/${types_name}" )
-        file( GLOB_RECURSE file_get_names "${check_path}/*.${types_name}" )
-
-        foreach( get_file_name ${file_get_names} )
-            # message( "发现文件 : ${get_file_name}" )
-            list( APPEND for_each_file_list ${get_file_name} )
-        endforeach()
-    endforeach()
 
     set( ${out_file_list} ${for_each_file_list} PARENT_SCOPE )
 endfunction()

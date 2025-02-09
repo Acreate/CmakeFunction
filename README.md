@@ -109,6 +109,16 @@ append_CXX_C_source_file_extensions( h hpp hc H HPP HC ) ## 追加后缀名
 
 
 
+#### check_value_is_define( result_ [\__CHECK_CMAKE_VALUE\_\_ <value_name>] )
+
+检查变量列表，标注其中未定义的变量
+
+```cmake
+## 检查 Qt6_DIR 与 qt_DIR 是否已经被定义，如果其中一个变量未定义，则返回该字面变量
+check_value_is_define( _result _CHECK_CMAKE_VALUE_ Qt6_DIR qt_DIR )
+## 若 Qt6_DIR 未定义，则 _result 列表理应保存 Qt6_DIR 名称，而不是 ${Qt6_DIR}
+```
+
 #### add_subdirectory_tools_lib()
 
 把工具库加入 cmake 项目内
@@ -173,6 +183,23 @@ path_dir_s 为路径列表，并非数组
 #### get_path_cmake_dir_path( out_list check_path_dir file_name )
 
 获取指定路径下的所有匹配文件名
+
+#### get_path_sources( out_file_list  [PATHS <路径 ...>] [LANGUAGES <语言 ...> ] [SUFFIXS <后缀 ...> ])
+
+out_file_list  返回源码列表
+
+PATHS 指定后续参数列表为路径，允许多个
+
+LANGUAGES 从指定开发语言获取源码后缀，允许多个编程语言，可以使用 supper_cmake_builder_language( result_language_list_ ) 获取支持语言
+
+SUFFIXS 指定后续参数列表为追加后缀，允许多个
+
+```cmake
+## 检查 "${CMAKE_CURRENT_LIST_DIR}/srcs" 路径当中所有支持 C/C++ 的源码，并且在这之上增加 .e 后缀检查
+get_path_sources( project_src_file PATHS "${CMAKE_CURRENT_LIST_DIR}/srcs" LANGUAGES CXX C SUFFIXS ".e" )
+```
+
+
 
 #### get_path_cxx_and_c_sources( out_file_list check_path )
 
@@ -321,6 +348,54 @@ path_dir_s 为路径列表，并非数组
 需要使用 configure_temp_files( target_path target_obj ) 配置路径
 
 并且该项目由 append_sub_directory_cmake_project_path( path_dir_s ) 加载
+
+### qtConfig.cmake
+
+包含 cmake 当中激活qt功能的函数
+
+#### printf_qt_cmake_out()
+
+打印 cmake 当中的 qt 环境变量
+
+#### qt_generate_deploy_cmake_script_inatll_job( _out_deploy_script_job_path target_obj )
+
+激活 qt 安装功能，自动配置 qt 环境所需要的库文件
+
+_out_deploy_script_job_path 返回生成脚本的路径
+
+target_obj 目标名称
+
+```
+qt_generate_deploy_cmake_script_inatll_job( scrpt_path_ "${prject_name}" )
+```
+
+#### init_qt_dir_event( qt_dir )
+
+激活 qt 环境
+
+该功能优先使用 \${qt_dir} 路径激活 qt 环境，备选使用 \${Qt6_DIR} 
+
+功能只能在未初始化时调用，再次调用，或者 qt 实现 cmake 初始化时成功时，该调用会失败
+
+如果需要重新初始化 qt 的 cmake，可以调用 update_qt_dir_event( qt_dir )
+
+```cmake
+init_qt_dir_event( "${Qt6_DIR}" )
+```
+
+#### update_qt_dir_event( qt_dir )
+
+更新 qt 的 cmake 环境
+
+与 init_qt_dir_evect( qt_dir ) 不同，该调用会覆盖就配置
+
+该功能优先使用 \${qt_dir} 路径激活 qt 环境，备选使用 \${Qt6_DIR} 
+
+```cmake
+update_qt_dir_event( "${Qt6_DIR}" )
+```
+
+
 
 ## tools 库
 

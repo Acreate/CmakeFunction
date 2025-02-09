@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
-function( printf_cmake_out )
+function( printf_qt_cmake_out )
     message( "QT_VERSION = ${QT_VERSION}" )
     message( "QT_VERSION_MAJOR = ${QT_VERSION_MAJOR}" )
     message( "DEPLOY_QT_HOME = ${DEPLOY_QT_HOME}" )
@@ -56,40 +56,159 @@ message( \"打包程序 : ${executable_path}\" )
     set( ${_out_deploy_script_job_path} ${deploy_script} PARENT_SCOPE )
 endfunction()
 
-if( NOT Qt6_DIR )
-    message( "未定义 Qt6_DIR 退出检测" )
-    return()
-endif()
+# # 更新 qt 路基
+# # qt_dir 指定路径，或者 Qt6_DIR 变量已经实现
+function( update_qt_dir_event qt_dir )
+    if( NOT qt_dir OR NOT EXISTS "${qt_dir}" )
+        if( NOT Qt6_DIR AND NOT EXISTS "${Qt6_DIR}" )
+            message( "路径不存在，请为 qt_dir 参数提供有效的路径或者使用有效的 Qt6_DIR 变量实现定义" )
+        else()
+            set( qt_dir "${Qt6_DIR}" PARENT_SCOPE )
+            message( "正在使用有效的 Qt6_DIR 变量实现定义 = ${Qt6_DIR}" )
+        endif()
 
-get_filename_component( _absParamFilePath "${Qt6_DIR}" ABSOLUTE )
+        return()
+    endif()
 
-get_cmake_separator( _sep )
-string_splite( _splite_dir_name "${_absParamFilePath}" "${_sep}" )
+    set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
+    set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
 
-list( GET _splite_dir_name -4 _builder_tools )
-set( DEPLOY_QT_HOME "${_result}" )
+    get_filename_component( _absParamFilePath "${Qt6_DIR}" ABSOLUTE )
 
-list( GET _splite_dir_name -5 _result ) # # 版本文件夹
+    get_cmake_separator( _sep )
+    string_splite( _splite_dir_name "${_absParamFilePath}" "${_sep}" )
 
-string_splite( _versionSplite "${_result}" "." )
-list( GET _versionSplite 0 QT_VERSION_MAJOR ) # # 获取主要版本
+    list( GET _splite_dir_name -5 _result ) # # 版本文件夹
 
-set( QT_VERSION "${_result}" )
-set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" )
-set( CMAKE_PREFIX_PATH "${DEPLOY_QT_HOME}" )
-set( Qt6_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}" )
-set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" )
-set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" )
-set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" )
-set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" )
-set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" )
-set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" )
-set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" )
-set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" )
+    string_splite( _versionSplite "${_result}" "." )
 
-set( CMAKE_AUTOUIC ON )
-set( CMAKE_AUTOMOC ON )
-set( CMAKE_AUTORCC ON )
+    list( GET _versionSplite 0 QT_VERSION_MAJOR ) # # 获取主要版本
+    set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+
+    set( QT_VERSION "${_result}" PARENT_SCOPE )
+
+    list( GET _splite_dir_name -4 _builder_tools )
+    set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" PARENT_SCOPE )
+
+    set( CMAKE_PREFIX_PATH "${DEPLOY_QT_HOME}" PARENT_SCOPE )
+    set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" PARENT_SCOPE )
+    set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" PARENT_SCOPE )
+
+    set( CMAKE_AUTOUIC ON PARENT_SCOPE )
+    set( CMAKE_AUTOMOC ON PARENT_SCOPE )
+    set( CMAKE_AUTORCC ON PARENT_SCOPE )
+endfunction()
+
+# # 更新 qt 路基，当环境已经实现时，该调用直接返回
+# # qt_dir 指定路径，或者 Qt6_DIR 变量已经实现
+function( init_qt_dir_event qt_dir )
+    check_value_is_define( _result _CHECK_CMAKE_VALUE_ Qt6_DIR qt_DIR QT_VERSION_MAJOR QT_VERSION DEPLOY_QT_HOME CMAKE_PREFIX_PATH WINDEPLOYQT_EXECUTABLE QT_QMAKE_EXECUTABLE Qt${QT_VERSION_MAJOR}CoreTools_DIR Qt${QT_VERSION_MAJOR}GuiTools_DIR Qt${QT_VERSION_MAJOR}WidgetsTools_DIR Qt${QT_VERSION_MAJOR}Widgets_DIR Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR Qt${QT_VERSION_MAJOR}Core_DIR )
+
+    if( NOT _result )
+        message( "<------------------>" )
+        message( "qt cmake 已经实现配置" )
+        message( "<------------------>" )
+        return()
+    else()
+        list( JOIN _result ", " _not_def_var )
+        message( "<------------------>" )
+        message( "正在配置列表 : ${_not_def_var}" )
+        message( "<------------------>" )
+    endif()
+
+    if( NOT qt_dir OR NOT EXISTS "${qt_dir}" )
+        if( NOT Qt6_DIR AND NOT EXISTS "${Qt6_DIR}" )
+            message( "路径不存在，请为 qt_dir 参数提供有效的路径或者使用有效的 Qt6_DIR 变量实现定义" )
+        else()
+            set( qt_dir "${Qt6_DIR}" PARENT_SCOPE )
+            message( "正在使用有效的 Qt6_DIR 变量实现定义 = ${Qt6_DIR}" )
+        endif()
+
+        return()
+    endif()
+
+    if( NOT Qt6_DIR )
+        set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt_DIR )
+        set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    endif()
+
+    if( NOT qt_DIR )
+        set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    endif()
+
+    get_filename_component( _absParamFilePath "${Qt6_DIR}" ABSOLUTE )
+
+    get_cmake_separator( _sep )
+    string_splite( _splite_dir_name "${_absParamFilePath}" "${_sep}" )
+
+    list( GET _splite_dir_name -5 _result ) # # 版本文件夹
+
+    string_splite( _versionSplite "${_result}" "." )
+
+    if( NOT QT_VERSION_MAJOR )
+        list( GET _versionSplite 0 QT_VERSION_MAJOR ) # # 获取主要版本
+        set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+    endif()
+
+    if( NOT QT_VERSION )
+        set( QT_VERSION "${_result}" PARENT_SCOPE )
+    endif()
+
+    if( NOT DEPLOY_QT_HOME )
+        list( GET _splite_dir_name -4 _builder_tools )
+        set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" PARENT_SCOPE )
+    endif()
+
+    if( NOT CMAKE_PREFIX_PATH )
+        set( CMAKE_PREFIX_PATH "${DEPLOY_QT_HOME}" PARENT_SCOPE )
+    endif()
+
+    if( NOT WINDEPLOYQT_EXECUTABLE )
+        set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" PARENT_SCOPE )
+    endif()
+
+    if( NOT QT_QMAKE_EXECUTABLE )
+        set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}CoreTools_DIR )
+        set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}GuiTools_DIR )
+        set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}WidgetsTools_DIR )
+        set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}Widgets_DIR )
+        set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR )
+        set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" PARENT_SCOPE )
+    endif()
+
+    if( NOT Qt${QT_VERSION_MAJOR}Core_DIR )
+        set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" PARENT_SCOPE )
+    endif()
+
+    set( CMAKE_AUTOUIC ON PARENT_SCOPE )
+    set( CMAKE_AUTOMOC ON PARENT_SCOPE )
+    set( CMAKE_AUTORCC ON PARENT_SCOPE )
+endfunction()
 
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
 string( FIND "${abs}" "${CMAKE_HOME_DIRECTORY}" index )
