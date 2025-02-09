@@ -174,9 +174,15 @@ path_dir_s 为路径列表，并非数组
 
 获取指定路径下的所有匹配文件名
 
-#### get_path_cxx_and_c_sources( check_path out_file_list )
+#### get_path_cxx_and_c_sources( out_file_list check_path )
 
-获取源码
+获取源码，根据 CMAKE_CXX_SOURCE_FILE_EXTENSIONS 与 CMAKE_C_SOURCE_FILE_EXTENSIONS 获取后缀，返回源码
+
+需要支持 C/C++，使用 check_language( C ) 与 check_language( CXX ) 返回 CMAKE_CXX_COMPILER 与 CMAKE_C_COMPILER 定义判定
+
+​	out_file_list 返回源码
+
+​	check_path 检查路径
 
 #### get_path_sources check_path( find_expansion out_file_list )
 

@@ -38,19 +38,30 @@ endfunction()
 # # 查找指定路径的 *.cpp *.c *.hpp *.h 文件
 # # check_path : 路径
 # # out_file_list : 返回值
-function( get_path_cxx_and_c_sources check_path out_file_list )
-    set( for_each_list_dirs ${${out_file_list}} )
-    file( GLOB_RECURSE file_get_names
-        "${check_path}/*.cpp"
-        "${check_path}/*.c"
-        "${check_path}/*.hpp"
-        "${check_path}/*.h"
-    )
+function( get_path_cxx_and_c_sources out_file_list check_path )
+    check_language( C )
+    check_language( CXX )
 
-    foreach( get_file_name ${file_get_names} )
-        file( REAL_PATH "${get_file_name}" out_value_path )
-        list( APPEND for_each_file_list ${out_value_path} )
+    if( NOT CMAKE_CXX_COMPILER AND NOT CMAKE_C_COMPILER AND EXISTS "${CMAKE_CXX_COMPILER}" AND EXISTS "${CMAKE_C_COMPILER}" )
+        message( "\t\t!!! 当前 cmake 环境并不支持 C/C++ ，请重新检查开发环境" )
+        return()
+    endif()
+
+    set( for_each_list_dirs ${${out_file_list}} )
+
+    foreach( cpp_suffix ${CMAKE_CXX_SOURCE_FILE_EXTENSIONS} )
+        string_splite( _splite_list "${cpp_suffix}" "." )
+        list( GET _splite_list -1 _result_suffix )
+        list( APPEND suffix "${check_path}/*.${_result_suffix}" )
     endforeach()
+
+    foreach( c_suffix ${CMAKE_C_SOURCE_FILE_EXTENSIONS} )
+        string_splite( _splite_list "${c_suffix}" "." )
+        list( GET _splite_list -1 _result_suffix )
+        list( APPEND suffix "${check_path}/*.${_result_suffix}" )
+    endforeach()
+
+    file( GLOB_RECURSE for_each_file_list ${suffix} )
 
     set( ${out_file_list} ${for_each_file_list} PARENT_SCOPE )
 endfunction()
