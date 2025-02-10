@@ -5,7 +5,7 @@
 #define Builder_Tools_Clang ${Builder_Tools_Clang} // 使用 clang 编译器
 #define Builder_Tools_GNU ${Builder_Tools_GNU} // 使用 gnu 编译器
 #define Builder_Tools_MSVC ${Builder_Tools_MSVC} // 使用 msvc 编译器
-#define Cmake_sep "${_cmake_sep}" // cmake 目录分隔符
+#define Cmake_sep "${_cmake_sep_char}" // cmake 目录分隔符
 
 #define Cmake_Project_Name "${PROJECT_NAME}" // cmake 项目名称
 #define Project_Run_bin "${Project_Run_bin}" // cmake 运行目录

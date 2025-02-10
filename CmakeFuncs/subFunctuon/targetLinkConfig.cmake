@@ -611,6 +611,7 @@ function( configure_all_target )
             else()
                 set( Builder_Tools_MSVC false )
             endif()
+			get_cmake_separator( _cmake_sep_char )
 
             set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
 
