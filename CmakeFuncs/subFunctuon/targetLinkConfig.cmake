@@ -50,7 +50,7 @@ endfunction()
 
 # ## 配置指定目标的 imgui 中的 glfw3 环境
 function( set_target_link_imgui_at_glfw3_lib target_obj )
-    set( imgui_at_glfw3_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/imgui-1.91.7/" )
+    set( imgui_at_glfw3_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/imgui-1.91.8/" )
     get_filename_component( imgui_at_glfw3_root "${imgui_at_glfw3_root}" ABSOLUTE )
     target_include_directories( "${target_obj}" PUBLIC "${imgui_at_glfw3_root}" )
     file( GLOB file_list "${imgui_at_glfw3_root}/*.c" "${imgui_at_glfw3_root}/*.cpp" "${imgui_at_glfw3_root}/*.h" "${imgui_at_glfw3_root}/*.hpp" )
@@ -175,7 +175,7 @@ function( set_target_link_opencv4110_lib target_obj )
     endif()
 endfunction()
 
-# ## 配置指定目标的 glad
+# ## 配置指定目标的使用当前配置库
 function( set_target_link_user_tools_lib target_obj )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../userLib/tools" )
     get_absolute_path( absFilePath ${root_path} )
