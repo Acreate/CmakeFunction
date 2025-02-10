@@ -4,7 +4,6 @@ function( printf_qt_cmake_out )
     message( "QT_VERSION = ${QT_VERSION}" )
     message( "QT_VERSION_MAJOR = ${QT_VERSION_MAJOR}" )
     message( "DEPLOY_QT_HOME = ${DEPLOY_QT_HOME}" )
-    message( "CMAKE_PREFIX_PATH = ${CMAKE_PREFIX_PATH}" )
     message( "Qt6_DIR = ${Qt6_DIR}" )
     message( "Qt${QT_VERSION_MAJOR}CoreTools_DIR = ${Qt${QT_VERSION_MAJOR}CoreTools_DIR}" )
     message( "Qt${QT_VERSION_MAJOR}GuiTools_DIR = ${Qt${QT_VERSION_MAJOR}GuiTools_DIR}" )
@@ -43,13 +42,20 @@ function( qt_generate_deploy_cmake_script_inatll_job _out_deploy_script_job_path
         TARGET ${target_obj}
         OUTPUT_SCRIPT deploy_script
         CONTENT "
+include( \"\\$\{CMAKE_CURRENT_LIST_DIR\}/$<TARGET_FILE_BASE_NAME:${target_obj}>-plugins.cmake\" OPTIONAL )
+include( \"\\$\{CMAKE_CURRENT_LIST_DIR\}/QtDeploySupport.cmake\" OPTIONAL )
+
+message( \"导入 : \\$\{CMAKE_CURRENT_LIST_DIR\}/$<TARGET_FILE_BASE_NAME:${target_obj}>-plugins.cmake\" )
+message( \"导入 : \\$\{CMAKE_CURRENT_LIST_DIR\}/QtDeploySupport.cmake\" )
+message( \"打包程序 : ${executable_path}\" )
+set( QT_DEPLOY_PREFIX  \"${Project_Run_Bin_Path}\" )
+set( QT_DEPLOY_PREFIX \"\\$\{QT_DEPLOY_PREFIX\}\" PARENT_SCOPE )
 qt_deploy_runtime_dependencies(
     EXECUTABLE \"${executable_path}\"
 	PLUGINS_DIR \"${Project_Run_Bin_Path}\"
 	LIB_DIR \"${Project_Run_Bin_Path}\"
 	BIN_DIR \"${Project_Run_Bin_Path}\"
 )
-message( \"打包程序 : ${executable_path}\" )
 " )
 
     install( SCRIPT ${deploy_script} )
@@ -70,9 +76,9 @@ function( update_qt_dir_event qt_dir )
         return()
     endif()
 
-    set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
-    set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
-    set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( Qt6_DIR "${qt_dir}" )
+    set( Qt_DIR "${Qt6_DIR}" )
+    set( qt_DIR "${Qt6_DIR}" )
 
     get_filename_component( _absParamFilePath "${Qt6_DIR}" ABSOLUTE )
 
@@ -84,26 +90,42 @@ function( update_qt_dir_event qt_dir )
     string_splite( _versionSplite "${_result}" "." )
 
     list( GET _versionSplite 0 QT_VERSION_MAJOR ) # # 获取主要版本
-    set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+    set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" )
 
-    set( QT_VERSION "${_result}" PARENT_SCOPE )
+    set( QT_VERSION "${_result}" )
 
     list( GET _splite_dir_name -4 _builder_tools )
-    set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" PARENT_SCOPE )
+    set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" )
+    set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" )
+    set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" )
+    set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" )
+    set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" )
+    set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" )
+    set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" )
+    set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" )
+    set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" )
+    set( CMAKE_AUTOUIC ON )
+    set( CMAKE_AUTOMOC ON )
+    set( CMAKE_AUTORCC ON )
 
-    set( CMAKE_PREFIX_PATH "${DEPLOY_QT_HOME}" PARENT_SCOPE )
-    set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" PARENT_SCOPE )
-    set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" PARENT_SCOPE )
-    set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" PARENT_SCOPE )
+    set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
+    set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+    set( QT_VERSION "${QT_VERSION}" PARENT_SCOPE )
+    set( DEPLOY_QT_HOME "${DEPLOY_QT_HOME}" PARENT_SCOPE )
+    set( WINDEPLOYQT_EXECUTABLE "${WINDEPLOYQT_EXECUTABLE}" PARENT_SCOPE )
+    set( QT_QMAKE_EXECUTABLE "${QT_QMAKE_EXECUTABLE}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${Qt${QT_VERSION_MAJOR}CoreTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${Qt${QT_VERSION_MAJOR}GuiTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${Qt${QT_VERSION_MAJOR}WidgetsTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${Qt${QT_VERSION_MAJOR}Widgets_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Core_DIR "${Qt${QT_VERSION_MAJOR}Core_DIR}" PARENT_SCOPE )
 
-    set( CMAKE_AUTOUIC ON PARENT_SCOPE )
-    set( CMAKE_AUTOMOC ON PARENT_SCOPE )
-    set( CMAKE_AUTORCC ON PARENT_SCOPE )
+    set( CMAKE_AUTOUIC ${CMAKE_AUTOUIC} PARENT_SCOPE )
+    set( CMAKE_AUTOMOC ${CMAKE_AUTOMOC} PARENT_SCOPE )
+    set( CMAKE_AUTORCC ${CMAKE_AUTORCC} PARENT_SCOPE )
 endfunction()
 
 # # 更新 qt 路基，当环境已经实现时，该调用直接返回
@@ -135,15 +157,15 @@ function( init_qt_dir_event qt_dir )
     endif()
 
     if( NOT Qt6_DIR )
-        set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
+        set( Qt6_DIR "${qt_dir}" )
     endif()
 
     if( NOT Qt_DIR )
-        set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+        set( Qt_DIR "${Qt6_DIR}" )
     endif()
 
     if( NOT qt_DIR )
-        set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+        set( qt_DIR "${Qt6_DIR}" )
     endif()
 
     get_filename_component( _absParamFilePath "${Qt6_DIR}" ABSOLUTE )
@@ -157,57 +179,72 @@ function( init_qt_dir_event qt_dir )
 
     if( NOT QT_VERSION_MAJOR )
         list( GET _versionSplite 0 QT_VERSION_MAJOR ) # # 获取主要版本
-        set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+        set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" )
     endif()
 
     if( NOT QT_VERSION )
-        set( QT_VERSION "${_result}" PARENT_SCOPE )
+        set( QT_VERSION "${_result}" )
     endif()
 
     if( NOT DEPLOY_QT_HOME )
         list( GET _splite_dir_name -4 _builder_tools )
-        set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" PARENT_SCOPE )
-    endif()
-
-    if( NOT CMAKE_PREFIX_PATH )
-        set( CMAKE_PREFIX_PATH "${DEPLOY_QT_HOME}" PARENT_SCOPE )
+        set( DEPLOY_QT_HOME "C:/Qt/${QT_VERSION}/${_builder_tools}/" )
     endif()
 
     if( NOT WINDEPLOYQT_EXECUTABLE )
-        set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" PARENT_SCOPE )
+        set( WINDEPLOYQT_EXECUTABLE "${DEPLOY_QT_HOME}/bin/windeployqt.exe" )
     endif()
 
     if( NOT QT_QMAKE_EXECUTABLE )
-        set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" PARENT_SCOPE )
+        set( QT_QMAKE_EXECUTABLE "${DEPLOY_QT_HOME}/bin/qmake.exe" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}CoreTools_DIR )
-        set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}CoreTools" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}GuiTools_DIR )
-        set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}GuiTools" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}WidgetsTools_DIR )
-        set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}WidgetsTools" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}Widgets_DIR )
-        set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Widgets" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR )
-        set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}ZlibPrivate" )
     endif()
 
     if( NOT Qt${QT_VERSION_MAJOR}Core_DIR )
-        set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" PARENT_SCOPE )
+        set( Qt${QT_VERSION_MAJOR}Core_DIR "${DEPLOY_QT_HOME}/lib/cmake/Qt${QT_VERSION_MAJOR}Core" )
     endif()
 
-    set( CMAKE_AUTOUIC ON PARENT_SCOPE )
-    set( CMAKE_AUTOMOC ON PARENT_SCOPE )
-    set( CMAKE_AUTORCC ON PARENT_SCOPE )
+    set( CMAKE_AUTOUIC ON )
+    set( CMAKE_AUTOMOC ON )
+    set( CMAKE_AUTORCC ON )
+
+    set( Qt6_DIR "${qt_dir}" PARENT_SCOPE )
+    set( Qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( qt_DIR "${Qt6_DIR}" PARENT_SCOPE )
+    set( QT_VERSION_MAJOR "${QT_VERSION_MAJOR}" PARENT_SCOPE )
+    set( QT_VERSION "${QT_VERSION}" PARENT_SCOPE )
+    set( DEPLOY_QT_HOME "${DEPLOY_QT_HOME}" PARENT_SCOPE )
+    set( WINDEPLOYQT_EXECUTABLE "${WINDEPLOYQT_EXECUTABLE}" PARENT_SCOPE )
+    set( QT_QMAKE_EXECUTABLE "${QT_QMAKE_EXECUTABLE}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}CoreTools_DIR "${Qt${QT_VERSION_MAJOR}CoreTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}GuiTools_DIR "${Qt${QT_VERSION_MAJOR}GuiTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}WidgetsTools_DIR "${Qt${QT_VERSION_MAJOR}WidgetsTools_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Widgets_DIR "${Qt${QT_VERSION_MAJOR}Widgets_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR "${Qt${QT_VERSION_MAJOR}ZlibPrivate_DIR}" PARENT_SCOPE )
+    set( Qt${QT_VERSION_MAJOR}Core_DIR "${Qt${QT_VERSION_MAJOR}Core_DIR}" PARENT_SCOPE )
+
+    set( CMAKE_AUTOUIC ${CMAKE_AUTOUIC} PARENT_SCOPE )
+    set( CMAKE_AUTOMOC ${CMAKE_AUTOMOC} PARENT_SCOPE )
+    set( CMAKE_AUTORCC ${CMAKE_AUTORCC} PARENT_SCOPE )
 endfunction()
 
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
