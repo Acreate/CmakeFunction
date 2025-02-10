@@ -126,6 +126,9 @@ function( supper_cmake_builder_language result_language_list_ )
 endfunction()
 
 # # 添加指定开发环境的源码后缀
+# # extension_list : 指定后缀
+# # LANGUAGES args :  语言列表
+# # SUFFIXS arg s: 后缀列表
 function( append_source_file_extensions extension_list )
     if( NOT PROJECT_NAME )
         message( FATAL_ERROR "需要先配置项目，否则该能容无法使用" )
@@ -203,8 +206,49 @@ function( add_subdirectory_tools_lib )
 endfunction()
 
 # ## 把测试库加入 cmake 项目内
-function( add_subdirectory_code_project )
-    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/" )
+function( add_subdirectory_test_code_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/testCode" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
+
+# ## 把测试库加入 cmake 项目内
+function( add_subdirectory_code_learn_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
+
+# ## 把测试库加入 cmake 项目内
+function( add_subdirectory_code_imgui_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/imgui" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
+
+
+# ## 把测试库加入 cmake 项目内
+function( add_subdirectory_code_cpp23_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/cpp 23" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
+
+# ## 把测试库加入 cmake 项目内
+function( add_subdirectory_code_opengl_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/opengl" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
+
+# ## 把测试库加入 cmake 项目内
+function( add_subdirectory_code_cmake_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/cmake" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
     filter_path_repetition( list_result lib_list )
     append_sub_directory_cmake_project_path_list( list_result )
