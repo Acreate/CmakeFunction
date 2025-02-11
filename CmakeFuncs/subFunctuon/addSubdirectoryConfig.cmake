@@ -299,7 +299,7 @@ function( append_sub_directory_cmake_project_path_list path_dir_s )
     endforeach()
 
     # 重新配置列表
-    set( property_name "addend_sub_directory_list_property" )
+    set( property_name "get_in_cmakeFunction_call_load_sub_directory_project_list" )
     get_property( _my_addend_sub_directory_list_is_define GLOBAL PROPERTY "${property_name}" DEFINED )
 
     if( _my_addend_sub_directory_list_is_define )
@@ -314,7 +314,7 @@ include( CheckLanguage )
 
 # # 获取使用 append_sub_directory_cmake_project_path 加载子项目列表的项目路径列表
 function( get_in_cmakeFunction_call_load_sub_directory_project_list result_list_ )
-    set( property_name "addend_sub_directory_list_property" )
+    set( property_name "get_in_cmakeFunction_call_load_sub_directory_project_list" )
     get_property( _my_addend_sub_directory_list_is_define GLOBAL PROPERTY "${property_name}" DEFINED )
 
     if( _my_addend_sub_directory_list_is_define )

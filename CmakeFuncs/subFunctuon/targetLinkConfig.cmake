@@ -57,7 +57,6 @@ function( set_target_link_imgui_at_glfw3_lib target_obj )
 
     set( source_list )
 
-
     foreach( file_name ${file_list} )
         if( EXISTS "${file_name}" )
             get_filename_component( absFilePathName "${file_name}" ABSOLUTE )
@@ -74,7 +73,7 @@ function( set_target_link_freeglut3_lib target_obj )
 
     set( lib_base_name "freeglutd.lib" )
     target_link_libraries( "${target_obj}" PUBLIC
-            "${root_path}/lib/${lib_base_name}" )
+        "${root_path}/lib/${lib_base_name}" )
 
     target_include_directories( "${target_obj}" PUBLIC
         "${root_path}/include" )
@@ -191,19 +190,21 @@ function( configure_all_target )
 
     # # 遍历目标
     foreach( sub_load_cmake_dir_path ${_append_list} )
-        get_property( target_obj DIRECTORY "${sub_load_cmake_dir_path}" PROPERTY BUILDSYSTEM_TARGETS )
+        get_property( target_obj_list DIRECTORY "${sub_load_cmake_dir_path}" PROPERTY BUILDSYSTEM_TARGETS )
 
-        if( NOT TARGET "${target_obj}" )
-            continue()
-        endif()
+        foreach( target_obj ${target_obj_list} )
+            if( NOT TARGET "${target_obj}" )
+                continue()
+            endif()
 
-        # # 是否存在配置路径
-        get_target_property( user_configure_path "${target_obj}" "user_current_configure_path" )
+            # # 是否存在配置路径
+            get_target_property( user_configure_path "${target_obj}" "user_current_configure_path" )
 
-        # # 存在配置路径，则开始配置
-        if( user_configure_path )
-            list( APPEND cmake_all_target_obj_config_list "${target_obj}" )
-        endif()
+            # # 存在配置路径，则开始配置
+            if( user_configure_path )
+                list( APPEND cmake_all_target_obj_config_list "${target_obj}" )
+            endif()
+        endforeach()
     endforeach()
 
     # # 遍历目标
@@ -600,7 +601,8 @@ function( configure_all_target )
             else()
                 set( Builder_Tools_MSVC false )
             endif()
-			get_cmake_separator( _cmake_sep_char )
+
+            get_cmake_separator( _cmake_sep_char )
 
             set( rootPath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/cmake_in" )
 
@@ -648,7 +650,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 
