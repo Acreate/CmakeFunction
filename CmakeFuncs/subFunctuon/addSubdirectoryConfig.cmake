@@ -205,14 +205,6 @@ function( add_subdirectory_tools_lib )
     append_sub_directory_cmake_project_path_list( root_path )
 endfunction()
 
-# ## 把测试库加入 cmake 项目内
-function( add_subdirectory_test_code_project )
-    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/testCode" )
-    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
-    filter_path_repetition( list_result lib_list )
-    append_sub_directory_cmake_project_path_list( list_result )
-endfunction()
-
 
 # ## 把测试库加入 cmake 项目内
 function( add_subdirectory_code_learn_project )

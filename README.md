@@ -123,10 +123,6 @@ check_value_is_define( _result _CHECK_CMAKE_VALUE_ Qt6_DIR qt_DIR )
 
 把工具库加入 cmake 项目内
 
-#### add_subdirectory_test_code_project()
-
-把测试库加入 cmake 项目内
-
 #### append_sub_directory_cmake_project_path_list( path_dir_s )
 
 把列表当中的所有项目都加入到 cmake 项目内
