@@ -213,6 +213,7 @@ function( add_subdirectory_test_code_project )
     append_sub_directory_cmake_project_path_list( list_result )
 endfunction()
 
+
 # ## 把测试库加入 cmake 项目内
 function( add_subdirectory_code_learn_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn" )
@@ -221,7 +222,7 @@ function( add_subdirectory_code_learn_project )
     append_sub_directory_cmake_project_path_list( list_result )
 endfunction()
 
-# ## 把测试库加入 cmake 项目内
+# ## 把 imgui 学习案例加入 cmake 项目内
 function( add_subdirectory_code_imgui_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/imgui" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
@@ -229,8 +230,16 @@ function( add_subdirectory_code_imgui_project )
     append_sub_directory_cmake_project_path_list( list_result )
 endfunction()
 
+# ## 把 qt 学习案例加入 cmake 项目内
+function( add_subdirectory_code_qt_project )
+    set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/qt" )
+    get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
+    filter_path_repetition( list_result lib_list )
+    append_sub_directory_cmake_project_path_list( list_result )
+endfunction()
 
-# ## 把测试库加入 cmake 项目内
+
+# ## 把 cpp 23 学习案例加入 cmake 项目内
 function( add_subdirectory_code_cpp23_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/cpp 23" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
@@ -238,7 +247,7 @@ function( add_subdirectory_code_cpp23_project )
     append_sub_directory_cmake_project_path_list( list_result )
 endfunction()
 
-# ## 把测试库加入 cmake 项目内
+# ## 把 opengl 学习案例加入 cmake 项目内
 function( add_subdirectory_code_opengl_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/opengl" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
@@ -246,7 +255,7 @@ function( add_subdirectory_code_opengl_project )
     append_sub_directory_cmake_project_path_list( list_result )
 endfunction()
 
-# ## 把测试库加入 cmake 项目内
+# ## 把 cmake 学习案例加入 cmake 项目内
 function( add_subdirectory_code_cmake_project )
     set( root_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../cmake_source/learn/cmake" )
     get_path_cmake_dir_path( lib_list "${root_path}" "CMakeLists.txt" )
