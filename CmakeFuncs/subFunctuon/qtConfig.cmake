@@ -1,5 +1,6 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+# # 打印输出 qt 环境
 function( printf_qt_cmake_out )
     message( "QT_VERSION = ${QT_VERSION}" )
     message( "QT_VERSION_MAJOR = ${QT_VERSION_MAJOR}" )
@@ -15,6 +16,8 @@ function( printf_qt_cmake_out )
     message( "QT_QMAKE_EXECUTABLE = ${QT_QMAKE_EXECUTABLE}" )
 endfunction()
 
+# # 生成 qt 安装脚本
+# # target_obj 生成脚本的目标
 function( qt_generate_deploy_cmake_script_inatll_job _out_deploy_script_job_path target_obj )
     if( qt_FOUND EQUAL 0 )
         message( "未成功初始化该模块，请定义 Qt6_DIR 后在初始化模块" )
