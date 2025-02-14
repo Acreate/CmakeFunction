@@ -354,6 +354,17 @@ function( find_file_name _out_list check_path_dir file_name )
     endif()
 endfunction()
 
+## 把 target_obj 目标中的生成文件拷贝到 target_path 目录下
+function( copt_target_builder_file_to_path target_obj target_path )
+    add_custom_command( TARGET "${target_obj}"
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: ${target_path}/$<TARGET_FILE_NAME:${result_name}>"
+        COMMAND ${CMAKE_COMMAND} -E copy -t "${target_path}/" "$<TARGET_FILE:${result_name}>"
+        COMMENT "拷贝 $<TARGET_FILE:${target_obj}> 到 ${target_obj_buider_path}"
+        DEPENDS "${result_name}"
+    )
+endfunction()
+
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
 string( FIND "${abs}" "${CMAKE_HOME_DIRECTORY}" index )
 

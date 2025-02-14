@@ -168,6 +168,10 @@ path_dir_s 为路径列表，并非数组
 
 ### pathConfig.cmake
 
+#### copt_target_builder_file_to_path( target_obj target_path )
+
+把 target_obj 目标中的生成文件拷贝到 target_path 目录下
+
 #### get_current_dir_name( out_name in_path )
 
 获取当前文件夹名称
@@ -288,6 +292,14 @@ get_path_sources( project_src_file PATHS "${CMAKE_CURRENT_LIST_DIR}/srcs" LANGUA
 切分字符串
 
 ### targetLinkConfig.cmake
+
+#### get_target_builder_path( result_out_path target_obj )
+
+获取目标的编译路径
+
+result_out_path : 返回的编译路径
+
+target_obj : 获取目标
 
 #### set_target_link_glm_lib( target_obj )
 

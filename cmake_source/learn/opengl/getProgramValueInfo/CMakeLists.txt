@@ -11,9 +11,9 @@ message( "============ ${CURRENT_FOLDER}" )
 add_executable( ${PROJECT_NAME} )
 
 set_target_win32_cmd_windows( "${prject_name}" )
-set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}" )
-set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}" )
-set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}" )
+set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}/${prject_name}" )
+set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path/${prject_name}}" )
+set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${prject_name}" )
 
 set_target_link_glad46compatibility_lib( "${prject_name}" )
 set_target_link_glfw3_lib( "${prject_name}" )

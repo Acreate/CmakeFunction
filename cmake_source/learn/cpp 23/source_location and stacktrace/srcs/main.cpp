@@ -9,6 +9,11 @@ DEF_CURRENT_PROJECT_NAME( );
 
 void out( ) {
 	auto currentsacktrace = std::stacktrace::current( );
+
+	std::cout << "=============\n";
+	std::cout << std::to_string( currentsacktrace );
+	std::cout << "\n=============\n";
+	size_t inde = 0;
 	std::stringstream ss;
 	ss << "\n";
 	for( auto &entry : currentsacktrace ) {
@@ -19,12 +24,14 @@ void out( ) {
 		auto nativeHandle = entry.native_handle( );
 
 		ss << "=============\n";
+		ss << "index = " << inde << "\n";
 		ss << "description = " << description << "\n";
 		ss << "sourceFile = " << sourceFile << "\n";
 		ss << "sourceLine = " << sourceLine << "\n";
 		ss << "----------->\n";
-		ss << "entry = " << entry << "\n";
+		ss << "\tentry = " << entry << "\n";
 		ss << "=============\n";
+		inde += 1;
 	}
 	Printer_Normal_Info( ss.str( ) );
 	ss = std::stringstream( );
@@ -42,8 +49,6 @@ void out( ) {
 
 int main( int argc, char **argv ) {
 
-	out( );
-	
 	out( );
 	exit( EXIT_SUCCESS ); // 安全退出
 }

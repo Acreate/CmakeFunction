@@ -30,16 +30,16 @@ message( "name = " "${prject_name}" )
 project( "${prject_name}" )
 message( "============ ${CURRENT_FOLDER}" )
 
-add_library( ${PROJECT_NAME} SHARED )
+add_library( ${PROJECT_NAME} SHARED  )
 
 set( include_path "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 
 string( REPLACE "." "_" project_name_include_dir "${prject_name}" )
 set( ${project_name_include_dir}_include_dir "${include_path}" "${include_path}" PARENT_SCOPE )
 
-set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}" )
-set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}" )
-set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}" )
+set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}/${prject_name}" )
+set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}/${prject_name}" )
+set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${prject_name}" )
 
 string( SUBSTRING "${PROJECT_NAME}" 0 1 exportFileStartName )
 string( SUBSTRING "${PROJECT_NAME}" 1 -1 exportFileName )

@@ -1,5 +1,26 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+# # 获取目标的编译路径
+# # result_out_path : 返回的编译路径
+# # target_obj : 获取目标
+function( get_target_builder_path result_out_path target_obj )
+    get_target_property( target_obj_type "${target_obj}" TYPE )
+
+    if( "${target_obj_type}" STREQUAL "EXECUTABLE" )
+        get_target_property( target_obj_path "${target_obj}" RUNTIME_OUTPUT_DIRECTORY )
+    elseif( "${target_obj_type}" STREQUAL "SHARED_LIBRARY" )
+        if( WIN32 )
+            get_target_property( target_obj_path "${target_obj}" RUNTIME_OUTPUT_DIRECTORY )
+        else()
+            get_target_property( target_obj_path "${target_obj}" LIBRARY_OUTPUT_DIRECTORY )
+        endif()
+    else()
+        get_target_property( target_obj_path "${target_obj}" LIBRARY_OUTPUT_DIRECTORY )
+    endif()
+
+    set( ${result_out_path} "${target_obj_path}" PARENT_SCOPE )
+endfunction()
+
 # ## 配置指定目标的 soil2
 function( set_target_link_glm_lib target_obj )
     set( glm_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glm-1.0.1-light" )
@@ -84,8 +105,9 @@ function( set_target_link_freeglut3_lib target_obj )
         message( "\t\t发现动态库目标路径 : " ${run_path} )
         set( dll_base_name "freeglutd.dll" )
         set( freeglut3_dll_file_path "${root_path}/bin/${dll_base_name}" )
-        execute_process( COMMAND ${CMAKE_COMMAND} -E make_directory ${run_path} )
-        file( COPY_FILE "${freeglut3_dll_file_path}" "${run_path}/${dll_base_name}" )
+        get_target_builder_path( target_obj_buider_path "${target_obj}" )
+        execute_process( COMMAND ${CMAKE_COMMAND} -E make_directory ${target_obj_buider_path} )
+        file( COPY_FILE "${freeglut3_dll_file_path}" "${target_obj_buider_path}/${dll_base_name}" )
     endif()
 endfunction()
 
@@ -171,7 +193,17 @@ function( set_target_link_user_tools_lib target_obj )
     list( GET result_list -3 -2 -1 resultList )
     string( JOIN " " jionResult ${resultList} )
     normal_project_name( result_name "${jionResult}" )
-    target_link_libraries( "${target_obj}" PUBLIC ${result_name} )
+    add_dependencies( "${target_obj}" "${result_name}" )
+    target_link_libraries( "${target_obj}" PRIVATE "${result_name}" )
+    add_custom_command( TARGET "${target_obj}"
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target_obj}>"
+		COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
+        COMMAND ${CMAKE_COMMAND} -E copy -t "$<TARGET_FILE_DIR:${target_obj}>/" "$<TARGET_FILE:${result_name}>"
+        COMMENT "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
+        DEPENDS "${result_name}"
+      
+    )
 endfunction()
 
 # # 配置模板到指定路径-配置完成后，调用 configure_all_target() 自动配置到指定路径
