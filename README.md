@@ -168,6 +168,26 @@ path_dir_s 为路径列表，并非数组
 
 ### pathConfig.cmake
 
+#### init_std_builder_path()
+
+初始化路径，允许下列变量
+
+\## Project_Run_Bin_Path : 二进制路径
+
+\## Project_Run_Pbd_Path : 调试路径
+
+\## Project_Run_Static_Lib_Path : 静态库目录
+
+\## Project_Install_Path : 安装目录
+
+```cmake
+set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}/${prject_name}" )
+set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}/${prject_name}" )
+set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${prject_name}" )
+```
+
+
+
 #### copt_target_builder_file_to_path( target_obj target_path )
 
 把 target_obj 目标中的生成文件拷贝到 target_path 目录下

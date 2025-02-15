@@ -1,5 +1,22 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+## 配置标准路径变量
+## Project_Run_Bin_Path : 二进制路径
+## Project_Run_Pbd_Path : 调试路径
+## Project_Run_Static_Lib_Path : 静态库目录
+## Project_Install_Path : 安装目录
+function( init_std_builder_path )
+    set( Project_Run_Bin_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_bin/" )
+    set( Project_Run_Pbd_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_pbd/" )
+    set( Project_Run_Static_Lib_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_lib/" )
+    set( Project_Install_Path "${CMAKE_HOME_DIRECTORY}/builder/install/" )
+
+    set( Project_Run_Bin_Path "${Project_Run_Bin_Path}" PARENT_SCOPE )
+    set( Project_Run_Pbd_Path "${Project_Run_Pbd_Path}" PARENT_SCOPE )
+    set( Project_Run_Static_Lib_Path "${Project_Run_Static_Lib_Path}" PARENT_SCOPE )
+    set( Project_Install_Path "${Project_Install_Path}" PARENT_SCOPE )
+endfunction()
+
 # ## 根据目录获取一个文件夹名称
 function( get_current_dir_name out_name in_path )
     string( REGEX REPLACE ".*/(.*)" "\\1" CURRENT_FOLDER ${in_path} )
@@ -354,7 +371,7 @@ function( find_file_name _out_list check_path_dir file_name )
     endif()
 endfunction()
 
-## 把 target_obj 目标中的生成文件拷贝到 target_path 目录下
+# # 把 target_obj 目标中的生成文件拷贝到 target_path 目录下
 function( copt_target_builder_file_to_path target_obj target_path )
     add_custom_command( TARGET "${target_obj}"
         POST_BUILD
