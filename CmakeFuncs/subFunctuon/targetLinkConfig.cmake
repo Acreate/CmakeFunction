@@ -25,14 +25,14 @@ endfunction()
 function( set_target_link_glm_lib target_obj )
     set( glm_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glm-1.0.1-light" )
     get_filename_component( glm_abs "${glm_root}" ABSOLUTE )
-    target_include_directories( "${target_obj}" PUBLIC "${glm_abs}" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${glm_abs}" )
     file( GLOB_RECURSE source_list "${glm_abs}/*.c" "${glm_abs}/*.cpp" "${glm_abs}/*.h" "${glm_abs}/*.hpp" )
     target_sources( ${target_obj} INTERFACE ${source_list} )
 endfunction()
 
 # ## 配置指定目标的 soil2
 function( set_target_link_soil2_lib target_obj )
-    target_include_directories( "${target_obj}" PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/SOIL2-1.3.0/src/" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/SOIL2-1.3.0/src/" )
     target_link_libraries( "${target_obj}" PUBLIC
         $<$<CONFIG:Release>:"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/SOIL2-1.3.0//lib/windows/soil2">
         $<$<CONFIG:Debug>:"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/SOIL2-1.3.0//lib/windows/soil2-debug"> )
@@ -42,7 +42,7 @@ endfunction()
 function( set_target_link_glew3_lib target_obj )
     target_link_libraries( "${target_obj}" PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glew-2.2.0/lib/Release/x64/glew32.lib" )
-    target_include_directories( "${target_obj}" PUBLIC
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glew-2.2.0/include" )
 
     if( WIN32 )
@@ -62,7 +62,7 @@ endfunction()
 
 # ## 配置指定目标的 glfw3
 function( set_target_link_glfw3_lib target_obj )
-    target_include_directories( "${target_obj}" PUBLIC
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glfw-3.4.bin.WIN64/include" )
     target_link_libraries( "${target_obj}" PUBLIC
         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
@@ -73,7 +73,7 @@ endfunction()
 function( set_target_link_imgui_at_glfw3_lib target_obj )
     set( imgui_at_glfw3_root "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../lib/imgui-1.91.8/" )
     get_filename_component( imgui_at_glfw3_root "${imgui_at_glfw3_root}" ABSOLUTE )
-    target_include_directories( "${target_obj}" PUBLIC "${imgui_at_glfw3_root}" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${imgui_at_glfw3_root}" )
     file( GLOB file_list "${imgui_at_glfw3_root}/*.c" "${imgui_at_glfw3_root}/*.cpp" "${imgui_at_glfw3_root}/*.h" "${imgui_at_glfw3_root}/*.hpp" "${imgui_at_glfw3_root}/backends/imgui_impl_opengl3*.*" "${imgui_at_glfw3_root}/backends/imgui_impl_glfw.*" )
 
     set( source_list )
@@ -96,7 +96,7 @@ function( set_target_link_freeglut3_lib target_obj )
     target_link_libraries( "${target_obj}" PUBLIC
         "${root_path}/lib/${lib_base_name}" )
 
-    target_include_directories( "${target_obj}" PUBLIC
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC
         "${root_path}/include" )
 
     if( WIN32 )
@@ -117,7 +117,7 @@ function( set_target_link_glad46compatibility_lib target_obj )
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
-    target_include_directories( "${target_obj}" PUBLIC "${absDir}/include" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${absDir}/include" )
 endfunction()
 
 # ## 配置指定目标的  glad 4.6 core
@@ -126,7 +126,7 @@ function( set_target_link_glad46core_lib target_obj )
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
-    target_include_directories( "${target_obj}" PUBLIC "${absDir}/include" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${absDir}/include" )
 endfunction()
 
 # ## 配置指定目标的 glad 3.3 core
@@ -135,7 +135,7 @@ function( set_target_link_glad33core_lib target_obj )
     get_absolute_path( absDir ${root_path} )
     set( copySourceCFile "${absDir}/src/glad.c" )
     target_sources( "${target_obj}" PRIVATE "${copySourceCFile}" )
-    target_include_directories( "${target_obj}" PUBLIC "${absDir}/include" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${absDir}/include" )
 endfunction()
 
 # ## 配置指定目标的 stb_image-2025.02.05
@@ -148,7 +148,7 @@ function( set_target_link_stb_2025_02_05_lib target_obj )
     target_sources( "${target_obj}" PRIVATE ${cpp_source} )
     file( GLOB head_source "${absDir}/*.h" )
     target_sources( "${target_obj}" PRIVATE ${head_source} )
-    target_include_directories( "${target_obj}" PUBLIC "${absDir}" )
+    target_include_directories( "${target_obj}" SYSTEM PUBLIC "${absDir}" )
 endfunction()
 
 # ## 配置指定目标的 opencv4110
@@ -161,7 +161,7 @@ function( set_target_link_opencv4110_lib target_obj )
 
     if( OpenCV_FOUND )
         target_link_libraries( "${target_obj}" PUBLIC ${OpenCV_LIBS} )
-        target_include_directories( "${target_obj}" PUBLIC ${OpenCV_INCLUDE_DIRS} )
+        target_include_directories( "${target_obj}" SYSTEM PUBLIC ${OpenCV_INCLUDE_DIRS} )
 
         get_target_property( run_path "${target_obj}" RUNTIME_OUTPUT_DIRECTORY )
         get_target_property( name "${target_obj}" ARCHIVE_OUTPUT_NAME )
@@ -198,11 +198,10 @@ function( set_target_link_user_tools_lib target_obj )
     add_custom_command( TARGET "${target_obj}"
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target_obj}>"
-		COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
+        COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
         COMMAND ${CMAKE_COMMAND} -E copy -t "$<TARGET_FILE_DIR:${target_obj}>/" "$<TARGET_FILE:${result_name}>"
         COMMENT "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
         DEPENDS "${result_name}"
-      
     )
 endfunction()
 
@@ -670,7 +669,7 @@ function( configure_all_target )
 #endif // ${c_head_macro}\n" )
             file( WRITE "${user_configure_path}/${write_file_name}" "${head_file_context}" )
             target_sources( "${target_obj}" PRIVATE "${user_configure_path}/${write_file_name}" )
-            target_include_directories( "${target_obj}" PRIVATE "${user_configure_path}" )
+            target_include_directories( "${target_obj}" SYSTEM PRIVATE "${user_configure_path}" )
         endif()
     endforeach()
 endfunction()

@@ -11,7 +11,7 @@ message( "============ ${CURRENT_FOLDER}" )
 add_executable( ${PROJECT_NAME} )
 
 # 加入头文件搜索路径
-target_include_directories( "${prject_name}" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
+target_include_directories( "${prject_name}" SYSTEM PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 get_path_files( project_src_file "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 target_sources( "${prject_name}" PRIVATE ${project_src_file} )
 

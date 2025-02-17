@@ -18,14 +18,13 @@ set_target_bin_out_path_property( "${prject_name}" "${Project_Run_Bin_Path}/${pr
 set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_Lib_Path}/${prject_name}" )
 set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${prject_name}" )
 
-
 set_target_link_glad46compatibility_lib( "${prject_name}" )
 set_target_link_glfw3_lib( "${prject_name}" )
 set_target_link_user_tools_lib( "${prject_name}" )
 set_target_link_win_opengl3_lib( "${prject_name}" )
 
 # 加入头文件搜索路径
-target_include_directories( "${prject_name}" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
+target_include_directories( "${prject_name}" SYSTEM PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 get_path_files( project_src_file "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 target_sources( "${prject_name}" PRIVATE ${project_src_file} )
 

@@ -21,7 +21,7 @@ set_target_link_user_tools_lib( "${prject_name}" )
 set_target_link_win_opengl3_lib( "${prject_name}" )
 
 # 加入头文件搜索路径
-target_include_directories( "${prject_name}" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
+target_include_directories( "${prject_name}" SYSTEM PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 get_path_files( project_src_file "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 target_sources( "${prject_name}" PRIVATE ${project_src_file} )
 

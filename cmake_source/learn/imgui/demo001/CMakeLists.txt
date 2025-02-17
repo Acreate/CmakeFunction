@@ -25,10 +25,11 @@ set_target_link_win_opengl3_lib( "${prject_name}" )
 set_target_link_imgui_at_glfw3_lib( "${prject_name}" )
 
 # 加入头文件搜索路径
-target_include_directories( "${prject_name}" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
+target_include_directories( "${prject_name}" SYSTEM PUBLIC "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 get_path_files( project_src_file "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 target_sources( "${prject_name}" PRIVATE ${project_src_file} )
-target_compile_options("${prject_name}" INTERFACE "/utf-8" )
+target_compile_options( "${prject_name}" INTERFACE "/utf-8" )
+
 # # 生成文件
 set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
 configure_temp_files( ${cmake_definitions_env_out} "${prject_name}" )
@@ -36,4 +37,3 @@ configure_temp_files( ${cmake_definitions_env_out} "${prject_name}" )
 set( copy_file_target_dir "${Project_Run_Bin_Path}/${PROJECT_NAME}" )
 set( copy_file_src_dir "${CMAKE_CURRENT_LIST_DIR}" )
 copy_dir_path_cmake_file_command( "${copy_file_src_dir}/resources" "${copy_file_target_dir}" )
-

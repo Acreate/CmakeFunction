@@ -27,6 +27,7 @@ function( check_value_is_define result_ )
     endif()
 endfunction()
 
+
 # # 添加支持语言
 function( supper_cmake_builder_language result_language_list_ )
     check_language( Fortran )

@@ -30,7 +30,7 @@ message( "name = " "${prject_name}" )
 project( "${prject_name}" )
 message( "============ ${CURRENT_FOLDER}" )
 
-add_library( ${PROJECT_NAME} SHARED  )
+add_library( ${PROJECT_NAME} SHARED )
 
 set( include_path "${CMAKE_CURRENT_LIST_DIR}/srcs" )
 
@@ -48,10 +48,10 @@ set( exportFileName "${CMAKE_CURRENT_SOURCE_DIR}/auto_generate_files/export/${ex
 generate_export_header( "${prject_name}" EXPORT_FILE_NAME ${exportFileName} )
 
 # 添加源文件
-target_include_directories( ${PROJECT_NAME} PUBLIC "${include_path}/srcs" ) # 加入头文件搜索路径
+target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC "${include_path}/srcs" ) # 加入头文件搜索路径
 get_path_files( project_src_file "srcs" )
 target_sources( ${PROJECT_NAME} PRIVATE ${project_src_file} )
 
-target_include_directories( ${PROJECT_NAME} PUBLIC ${include_path} )
+target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC ${include_path} )
 set( cmake_definitions_env_out "${CMAKE_CURRENT_LIST_DIR}/auto_generate_files/macro/" )
 configure_temp_files( ${cmake_definitions_env_out} "${prject_name}" )
