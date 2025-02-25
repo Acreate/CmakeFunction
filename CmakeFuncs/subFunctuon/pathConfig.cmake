@@ -1,10 +1,10 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
-## 配置标准路径变量
-## Project_Run_Bin_Path : 二进制路径
-## Project_Run_Pbd_Path : 调试路径
-## Project_Run_Static_Lib_Path : 静态库目录
-## Project_Install_Path : 安装目录
+# # 配置标准路径变量
+# # Project_Run_Bin_Path : 二进制路径
+# # Project_Run_Pbd_Path : 调试路径
+# # Project_Run_Static_Lib_Path : 静态库目录
+# # Project_Install_Path : 安装目录
 function( init_std_builder_path )
     set( Project_Run_Bin_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_bin/" )
     set( Project_Run_Pbd_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_pbd/" )

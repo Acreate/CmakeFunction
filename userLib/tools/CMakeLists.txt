@@ -10,8 +10,6 @@ set( CMAKE_CXX_STANDARD_REQUIRED ON )
 set( CMAKE_CXX_VISIBILITY_PRESET hidden )
 set( CMAKE_CXX_EXTENSIONS ON )
 
-supper_cmake_builder_language( _cmake_supper_language_list ) # # 语言支持列表
-
 include( GenerateExportHeader )
 include( GNUInstallDirs )
 
