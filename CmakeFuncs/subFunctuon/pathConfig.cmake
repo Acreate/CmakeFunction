@@ -1,5 +1,11 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
+# # 获取路径的全路径
+function( get_absolute_path result_dir_path in_path )
+    get_filename_component( absolutePath "${in_path}" ABSOLUTE ) # 全路径
+    set( ${result_dir_path} "${absolutePath}" PARENT_SCOPE )
+endfunction()
+
 # # 配置标准路径变量
 # # Project_Run_Bin_Path : 二进制路径
 # # Project_Run_Pbd_Path : 调试路径
@@ -137,7 +143,7 @@ endfunction()
 function( copy_dir_path_cmake_file_command source_path target_path )
     get_absolute_path( result_abs_path ${source_path} )
 
-    if( EXISTS ${source_path} )
+    if( EXISTS "${result_abs_path}" )
         set( copy_file_target_dir "${Project_Run_Bin_Path}/${PROJECT_NAME}" )
         set( copy_file_src_dir "${result_abs_path}" )
         file( COPY "${result_abs_path}" DESTINATION "${copy_file_target_dir}" )
@@ -149,18 +155,18 @@ endfunction()
 
 # # 拷贝目录到指定路径
 function( copy_dir_path_cmake_add_custom_command_POST_BUILD_command builder_target copy_dir_target paste_dir_target )
-    get_absolute_path( result_abs_path ${source_path} )
+    get_filename_component( result_abs_path "${copy_dir_target}" ABSOLUTE ) # 全路径
 
-    if( EXISTS ${source_path} )
+    if( EXISTS "${result_abs_path}" )
         add_custom_command(
-            TARGET ${builder_target} POST_BUILD
+            TARGET "${builder_target}" POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：${result_abs_path} 拷贝到: ${paste_dir_target}"
             COMMAND ${CMAKE_COMMAND} -E copy_directory "${result_abs_path}/" "${paste_dir_target}"
         )
     else()
         add_custom_command(
-            TARGET ${builder_target} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：${result_abs_path} 拷贝到: ${paste_dir_target}"
+            TARGET "${builder_target}" POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E echo "执行任务：${result_abs_path} 拷贝到: ${paste_dir_target} (失败 ! 路径不存在)"
         )
     endif()
 endfunction()
@@ -230,11 +236,7 @@ function( get_temp_file_dir_path result_dir_path )
     set( ${result_dir_path} "${absolutePath}/" PARENT_SCOPE )
 endfunction()
 
-# # 获取路径的全路径
-function( get_absolute_path result_dir_path in_path )
-    get_filename_component( absolutePath "${in_path}" ABSOLUTE ) # 全路径
-    set( ${result_dir_path} "${absolutePath}" PARENT_SCOPE )
-endfunction()
+
 
 # # 返回路径分隔符
 function( get_cmake_separator result_path_sep )

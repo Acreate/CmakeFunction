@@ -611,6 +611,7 @@ function( configure_all_target )
             get_target_property( cmake_property_will_fail "${target_obj}" WILL_FAIL )
             get_target_property( cmake_property_working_directory "${target_obj}" WORKING_DIRECTORY )
             get_target_property( cmake_property_sources "${target_obj}" SOURCES )
+            get_target_property( app_resouce_path "${target_obj}" appResoucePath )
 
             # define Builder_Tools_Clang ${Clang} // 使用 clang 编译器
             # define Builder_Tools_GNU ${GNU} // 使用 gnu 编译器

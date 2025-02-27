@@ -731,6 +731,7 @@
 #define cmake_property_WILL_FAIL "${cmake_property_will_fail}"
 /// @brief 
 #define cmake_property_WORKING_DIRECTORY "${cmake_property_working_directory}"
+#define cmake_usaer_def_appResoucePath "${app_resouce_path}"
 
 
 
@@ -1104,8 +1105,9 @@
 	std::pair<std::string, std::string>("cmake_property_TIMEOUT_SIGNAL_GRACE_PERIOD", cmake_property_TIMEOUT_SIGNAL_GRACE_PERIOD),\
 	std::pair<std::string, std::string>("cmake_property_TIMEOUT_SIGNAL_NAME", cmake_property_TIMEOUT_SIGNAL_NAME),\
 	std::pair<std::string, std::string>("cmake_property_WILL_FAIL", cmake_property_WILL_FAIL),\
-	std::pair<std::string, std::string>("cmake_property_WORKING_DIRECTORY", cmake_property_WORKING_DIRECTORY),\
+	std::pair<std::string, std::string>("cmake_usaer_def_appResoucePath", cmake_usaer_def_appResoucePath),\
 }
+
 /// @brief 定义获取有效 cmake 属性的函数，该声明前必须调用 DEF_ALL_CMAKE_PROPERTIES_VALUE_STD_VECTOR( ) 
 #define DEF_ALL_CMAKE_PROPERTIES_VALUE_GET_VALID_PAIRS_STD_VECTOR( ) \
 inline static std::vector< std::pair< std::string, std::string > > getValidCmakePropertyPairs( ) { \
