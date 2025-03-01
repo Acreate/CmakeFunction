@@ -141,12 +141,17 @@ function( user_install_copy_file dest_dir_path )
 endfunction()
 
 function( copy_dir_path_cmake_file_command source_path target_path )
-    get_absolute_path( result_abs_path ${source_path} )
+    if( EXISTS "${source_path}" )
+        if( IS_DIRECTORY "${source_path}" )
+            file( GLOB children "${source_path}/*" )
 
-    if( EXISTS "${result_abs_path}" )
-        set( copy_file_target_dir "${target_path}" )
-        set( copy_file_src_dir "${result_abs_path}" )
-        file( COPY "${result_abs_path}" DESTINATION "${copy_file_target_dir}" )
+            foreach( child ${children} )
+                file( COPY "${child}" DESTINATION "${target_path}" )
+            endforeach()
+        else()
+            file( COPY "${result_abs_path}" DESTINATION "${target_path}" )
+        endif()
+
         message( "执行拷贝任务：${result_abs_path} 拷贝到: ${copy_file_target_dir}" )
     else()
         message( "路径 ${result_abs_path} 不存在，拷贝命令失效" )
@@ -235,8 +240,6 @@ function( get_temp_file_dir_path result_dir_path )
     get_filename_component( absolutePath "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../temp/" ABSOLUTE ) # 全路径
     set( ${result_dir_path} "${absolutePath}/" PARENT_SCOPE )
 endfunction()
-
-
 
 # # 返回路径分隔符
 function( get_cmake_separator result_path_sep )
