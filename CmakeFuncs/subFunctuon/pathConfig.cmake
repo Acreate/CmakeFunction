@@ -144,7 +144,7 @@ function( copy_dir_path_cmake_file_command source_path target_path )
     get_absolute_path( result_abs_path ${source_path} )
 
     if( EXISTS "${result_abs_path}" )
-        set( copy_file_target_dir "${Project_Run_Bin_Path}/${PROJECT_NAME}" )
+        set( copy_file_target_dir "${target_path}" )
         set( copy_file_src_dir "${result_abs_path}" )
         file( COPY "${result_abs_path}" DESTINATION "${copy_file_target_dir}" )
         message( "执行拷贝任务：${result_abs_path} 拷贝到: ${copy_file_target_dir}" )
