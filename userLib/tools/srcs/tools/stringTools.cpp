@@ -4,61 +4,44 @@
 #include <sstream>
 #include <vector>
 #include <locale>
+
+typedef std::codecvt< wchar_t, char, mbstate_t > CodecvtFacet;
 size_t cyl::tools::stringTools::stdCppConverString( const std::string &conver_str, std::wstring &result_str, const std::locale &locale ) {
 
 	const char *src_str = conver_str.c_str( );
-	const size_t BUFFER_SIZE = conver_str.size( ) + 1;
+	size_t converCount = conver_str.size( );
+	const size_t bufferSize = ( converCount + 1 ) * sizeof std::string::value_type;
 
-	wchar_t *intern_buffer = new wchar_t[ BUFFER_SIZE ];
-	wmemset( intern_buffer, 0, BUFFER_SIZE );
+	wchar_t *internBuffer = new wchar_t[ bufferSize ];
+	wmemset( internBuffer, 0, bufferSize );
 
 	mbstate_t in_cvt_state;
-	const char *extern_from = src_str;
-	const char *extern_from_end = extern_from + conver_str.size( );
-	const char *extern_from_next = 0;
-	wchar_t *intern_to = intern_buffer;
-	wchar_t *intern_to_end = intern_to + BUFFER_SIZE;
-	wchar_t *intern_to_next = 0;
+	const char *externFromNext = 0;
+	wchar_t *internToNext = 0;
 
-	typedef std::codecvt< wchar_t, char, mbstate_t > CodecvtFacet;
-
-	CodecvtFacet::result cvt_rst =
+	CodecvtFacet::result cvtRst =
 		std::use_facet< CodecvtFacet >( locale ).in(
 			in_cvt_state,
-			extern_from, extern_from_end, extern_from_next,
-			intern_to, intern_to_end, intern_to_next );
-	if( cvt_rst != CodecvtFacet::ok ) {
-		switch( cvt_rst ) {
-			case CodecvtFacet::partial :
-				std::cerr << " partial ";
-				break ;
-			case CodecvtFacet::error :
-				std::cerr << " error ";
-				break ;
-			case CodecvtFacet::noconv :
-				std::cerr << " noconv ";
-				break ;
-			default :
-				std::cerr << " unknown ";
-		}
-		std::cerr << " , please check in_cvt_state. "
-			<< std::endl;
-		delete []intern_buffer;
+			src_str, src_str + converCount, externFromNext,
+			internBuffer, internBuffer + bufferSize, internToNext );
+	if( cvtRst != CodecvtFacet::ok ) {
+		delete []internBuffer;
 		return 0;
 	}
-	result_str = intern_buffer;
-	delete []intern_buffer;
-	return BUFFER_SIZE;
+	result_str = internBuffer;
+	delete []internBuffer;
+	return bufferSize;
 }
 size_t cyl::tools::stringTools::stdCppConverString( const std::wstring &conver_str, std::string &result_str, const std::locale &locale ) {
+	mbstate_t out_cvt_state;
 	const wchar_t *src_wstr = conver_str.c_str( );
-	const size_t MAX_UNICODE_BYTES = 4;
+	const size_t MAX_UNICODE_BYTES = sizeof std::wstring::value_type;
 	const size_t BUFFER_SIZE =
-		conver_str.size( ) * MAX_UNICODE_BYTES + 1;
+		( conver_str.size( ) + 1 ) * MAX_UNICODE_BYTES;
 
 	char *extern_buffer = new char [ BUFFER_SIZE ];
 	memset( extern_buffer, 0, BUFFER_SIZE );
-	mbstate_t out_cvt_state;
+
 	const wchar_t *intern_from = src_wstr;
 	const wchar_t *intern_from_end = intern_from + conver_str.size( );
 	const wchar_t *intern_from_next = 0;
@@ -66,29 +49,12 @@ size_t cyl::tools::stringTools::stdCppConverString( const std::wstring &conver_s
 	char *extern_to_end = extern_to + BUFFER_SIZE;
 	char *extern_to_next = 0;
 
-	typedef std::codecvt< wchar_t, char, mbstate_t > CodecvtFacet;
-
 	CodecvtFacet::result cvt_rst =
 		std::use_facet< CodecvtFacet >( locale ).out(
 			out_cvt_state,
 			intern_from, intern_from_end, intern_from_next,
 			extern_to, extern_to_end, extern_to_next );
 	if( cvt_rst != CodecvtFacet::ok ) {
-		switch( cvt_rst ) {
-			case CodecvtFacet::partial :
-				std::cerr << " partial ";
-				break ;
-			case CodecvtFacet::error :
-				std::cerr << " error ";
-				break ;
-			case CodecvtFacet::noconv :
-				std::cerr << " noconv ";
-				break ;
-			default :
-				std::cerr << " unknown ";
-		}
-		std::cerr << " , please check out_cvt_state. "
-			<< std::endl;
 		delete []extern_buffer;
 		return 0;
 	}

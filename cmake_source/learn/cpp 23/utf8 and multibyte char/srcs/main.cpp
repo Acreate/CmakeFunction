@@ -17,10 +17,13 @@ DEF_CURRENT_PROJECT_NAME( );
 
 int main( ) {
 	std::locale sys_loc( "" );
-	auto locale = std::wcout.imbue( sys_loc );
-	std::wcout.imbue( locale );
+	std::wcout.imbue( sys_loc );
+	std::cout.imbue( sys_loc );
 	std::string s = "中文";
 	std::wstring outWstring;
-	cyl::tools::stringTools::stdCppConverString( s, outWstring, locale );
-	std::wcout << outWstring << std::endl;
+	if( cyl::tools::stringTools::stdCppConverString( s, outWstring, sys_loc ) )
+		std::wcout << outWstring << std::endl;
+	outWstring = L"汉化";
+	if( cyl::tools::stringTools::stdCppConverString( outWstring, s, sys_loc ) )
+		std::cout << s << std::endl;
 }
