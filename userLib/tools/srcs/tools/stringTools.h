@@ -9,11 +9,9 @@
 
 #include "toolsNamespace.h"
 namespace cyl::tools::stringTools {
-	//CMAKEFUNCS_USERLIB_TOOLS_EXPORT  size_t converString( const std::string &conver_str, std::wstring &result_str );
-	//CMAKEFUNCS_USERLIB_TOOLS_EXPORT size_t converString( const std::string &conver_str, std::wstring &result_str, const std::locale &locale );
-	//CMAKEFUNCS_USERLIB_TOOLS_EXPORT size_t converString( const std::wstring &conver_str, std::string &result_str );
+	CMAKEFUNCS_USERLIB_TOOLS_EXPORT size_t stdCppConverString( const std::string &conver_str, std::wstring &result_str, const std::locale &locale );
+	CMAKEFUNCS_USERLIB_TOOLS_EXPORT size_t stdCppConverString( const std::wstring &conver_str, std::string &result_str, const std::locale &locale );
 
-	//CMAKEFUNCS_USERLIB_TOOLS_EXPORT size_t converString( const std::wstring &conver_str, std::string &result_str, const std::locale &locale );
 	/// @brief 宽字符串转多字节字符串
 	/// @param wstr 宽字符串
 	/// @param result
