@@ -195,7 +195,7 @@ function( set_target_link_user_tools_lib target_obj )
     normal_project_name( result_name "${jionResult}" )
     add_dependencies( "${target_obj}" "${result_name}" )
     target_link_libraries( "${target_obj}" PRIVATE "${result_name}" )
-    add_custom_command( TARGET "${target_obj}"
+    add_custom_command( TARGET "${result_name}"
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${target_obj}>"
         COMMAND ${CMAKE_COMMAND} -E echo "执行拷贝任务：$<TARGET_FILE:${result_name}> 拷贝到: $<TARGET_FILE_DIR:${target_obj}>/$<TARGET_FILE_NAME:${result_name}>"
