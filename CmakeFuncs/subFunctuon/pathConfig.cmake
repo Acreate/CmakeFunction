@@ -152,9 +152,9 @@ function( copy_dir_path_cmake_file_command source_path target_path )
             file( COPY "${result_abs_path}" DESTINATION "${target_path}" )
         endif()
 
-        message( "执行拷贝任务：${result_abs_path} 拷贝到: ${copy_file_target_dir}" )
+        message( "执行拷贝任务：${source_path} 拷贝到: ${target_path}" )
     else()
-        message( "路径 ${result_abs_path} 不存在，拷贝命令失效" )
+        message( "路径 ${source_path} 不存在，拷贝命令失效" )
     endif()
 endfunction()
 
