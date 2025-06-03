@@ -59,6 +59,7 @@ qt_deploy_runtime_dependencies(
 	LIB_DIR \"${Project_Run_Bin_Path}\"
 	BIN_DIR \"${Project_Run_Bin_Path}\"
 )
+message( \"完成程序 : ${executable_path}\" )
 " )
 
     install( SCRIPT ${deploy_script} )
