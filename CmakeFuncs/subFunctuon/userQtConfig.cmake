@@ -52,7 +52,7 @@ message( \"导入 : \\$\{CMAKE_CURRENT_LIST_DIR\}/$<TARGET_FILE_BASE_NAME:${targ
 message( \"导入 : \\$\{CMAKE_CURRENT_LIST_DIR\}/QtDeploySupport.cmake\" )
 message( \"打包程序 : ${executable_path}\" )
 set( QT_DEPLOY_PREFIX  \"${Project_Run_Bin_Path}\" )
-set( QT_DEPLOY_PREFIX \"\\$\{QT_DEPLOY_PREFIX\}\" PARENT_SCOPE )
+# set( QT_DEPLOY_PREFIX \"\\$\{QT_DEPLOY_PREFIX\}\" PARENT_SCOPE )
 qt_deploy_runtime_dependencies(
     EXECUTABLE \"${executable_path}\"
 	PLUGINS_DIR \"${Project_Run_Bin_Path}\"
