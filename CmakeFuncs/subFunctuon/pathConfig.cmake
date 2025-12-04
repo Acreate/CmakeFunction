@@ -12,9 +12,17 @@ endfunction()
 # # Project_Run_Static_Lib_Path : 静态库目录
 # # Project_Install_Path : 安装目录
 function( init_std_builder_path )
-    set( Project_Run_Bin_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_bin/" )
-    set( Project_Run_Pbd_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_pbd/" )
-    set( Project_Run_Static_Lib_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}_${CMAKE_CXX_COMPILER_ID}_lib/" )
+    set( processor_ver )
+
+    if( CMAKE_SYSTEM_PROCESSOR MATCHES "x86|i686" )
+        set( processor_ver x86 )
+    elseif( CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64" )
+        set( processor_ver x86_64 )
+    endif()
+
+    set( Project_Run_Bin_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${processor_ver}_${CMAKE_CXX_COMPILER_ID}_bin/" )
+    set( Project_Run_Pbd_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${processor_ver}_${CMAKE_CXX_COMPILER_ID}_pbd/" )
+    set( Project_Run_Static_Lib_Path "${CMAKE_HOME_DIRECTORY}/builder/${CMAKE_BUILD_TYPE}/${processor_ver}_${CMAKE_CXX_COMPILER_ID}_lib/" )
     set( Project_Install_Path "${CMAKE_HOME_DIRECTORY}/builder/install/" )
 
     set( Project_Run_Bin_Path "${Project_Run_Bin_Path}" PARENT_SCOPE )
