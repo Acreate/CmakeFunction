@@ -1,6 +1,6 @@
-﻿#ifndef CMAKE__QT_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
+#ifndef CMAKE__QT_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
 #define CMAKE__QT_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
-#pragma once
+
 /// @brief qt cmake 目录
 #define CMAKE_Qt6_DIR "${Qt6_DIR}" 
 /// @brief qt cmake 目录

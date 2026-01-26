@@ -1,6 +1,6 @@
-﻿#ifndef CMAKE__PROPERTY_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
+#ifndef CMAKE__PROPERTY_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
 #define CMAKE__PROPERTY_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
-#pragma once
+
 /// @brief 
 #define cmake_property_ADDITIONAL_CLEAN_FILES "${cmake_property_additional_clean_files}"
 /// @brief 

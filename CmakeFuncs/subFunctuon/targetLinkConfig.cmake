@@ -647,7 +647,7 @@ function( configure_all_target )
             set( head_file_context "\
 #ifndef ${c_head_macro}\n\
 #define ${c_head_macro}\n\
-#pragma once\n" )
+\n" )
 
             set( write_file_name "cmake_include_to_c_cpp_header_env.h" )
             get_filename_component( write_file_name ${write_file_name} NAME )

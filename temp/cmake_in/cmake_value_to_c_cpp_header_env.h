@@ -1,6 +1,5 @@
-﻿#ifndef CMAKE__VALUE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
+#ifndef CMAKE__VALUE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
 #define CMAKE__VALUE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
-#pragma once
 /// @brief 
 #define cmake_value_CTEST_CURL_OPTIONS "${CTEST_CURL_OPTIONS}"
 /// @brief 

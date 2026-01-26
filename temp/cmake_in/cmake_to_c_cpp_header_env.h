@@ -1,6 +1,6 @@
-﻿#ifndef CMAKE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
+#ifndef CMAKE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
 #define CMAKE_TO_C_CPP_HEADER_ENV_H_H_HEAD__FILE__
-#pragma once
+
 
 #define Builder_Tools_Clang ${Builder_Tools_Clang} // 使用 clang 编译器
 #define Builder_Tools_GNU ${Builder_Tools_GNU} // 使用 gnu 编译器
