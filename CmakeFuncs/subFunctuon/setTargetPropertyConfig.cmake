@@ -82,6 +82,29 @@ function( cancel_target_PDB_propertie target_obj )
     endif()
 endfunction()
 
+# ## 独立 pbd 的输出
+function( target_obj_PDB_propertie target_obj )
+    # 仅针对 MSVC 编译器（Windows 平台）生效
+    if( MSVC )
+        get_target_property( targetPDBOutPath "${target_obj}" PDB_OUTPUT_DIRECTORY
+            )
+        get_target_property( targetSources ${target_obj} SOURCES )
+        set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Zi /FS" )
+        set( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /INCREMENTAL:NO" )
+
+        # 遍历每个源文件，为其指定专属 PDB
+        foreach( SRC_FILE ${targetSources} )
+            # 获取源文件的文件名（不含路径和后缀），作为 PDB 名称
+            get_filename_component( FILE_NAME ${SRC_FILE} NAME_WE )
+
+            # 为该源文件添加编译选项：/Fd + 专属 PDB 名
+            set_source_files_properties( ${SRC_FILE} PROPERTIES
+                COMPILE_OPTIONS $<$<CONFIG:Debug>:/Fd${targetPDBOutPath}/${FILE_NAME}.pdb>
+            )
+        endforeach()
+    endif()
+endfunction()
+
 # ## 设置程序为命令行窗口
 function( set_target_WIN32_cmd_windows target_obj )
     if( WIN32 )
