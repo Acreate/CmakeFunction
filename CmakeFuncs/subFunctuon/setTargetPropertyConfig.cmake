@@ -50,13 +50,36 @@ function( set_target_PDB_out_path_property target_obj out_path )
     )
 endfunction()
 
-# ## 设置 pbd 输出位置
+# ## 激活 pbd 的输出
 function( enable_target_PDB_propertie target_obj )
     set_target_properties( "${target_obj}" PROPERTIES
         CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi"
         CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /OPT:REF /OPT:ICF"
         CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG /OPT:REF /OPT:ICF"
     )
+endfunction()
+
+# ## 取消 pbd 的输出
+function( cancel_target_PDB_propertie target_obj )
+    # 仅针对 MSVC 编译器（Windows 平台）生效
+    if( MSVC )
+        # 1. 关闭 C/C++ 编译阶段的调试信息生成
+        # /Z7、/Zi、/ZI 是生成调试信息的编译选项，/Zc:inline- 避免额外符号生成
+        set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Z7- /Zi- /ZI- /Zc:inline-" )
+        set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Z7- /Zi- /ZI- /Zc:inline-" )
+
+        # 2. 关闭链接器阶段的调试信息生成
+        # /DEBUG 是生成 .pdb 的核心链接选项，/DEBUG:NO 显式禁用
+        set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG:NO" )
+        set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG:NO" )
+        set( CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /DEBUG:NO" )
+
+        # 3. 可选：Release 模式下进一步禁用所有调试相关选项（强化版）
+        if( CMAKE_BUILD_TYPE STREQUAL "Release" )
+            set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Od- /Oy /GS-" )
+            set( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Od- /Oy /GS-" )
+        endif()
+    endif()
 endfunction()
 
 # ## 设置程序为命令行窗口
