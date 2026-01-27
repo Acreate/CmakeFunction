@@ -50,6 +50,15 @@ function( set_target_PDB_out_path_property target_obj out_path )
     )
 endfunction()
 
+# ## 设置 pbd 输出位置
+function( enable_target_PDB_propertie target_obj )
+    set_target_properties( "${target_obj}" PROPERTIES
+        CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zi"
+        CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /OPT:REF /OPT:ICF"
+        CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG /OPT:REF /OPT:ICF"
+    )
+endfunction()
+
 # ## 设置程序为命令行窗口
 function( set_target_WIN32_cmd_windows target_obj )
     if( WIN32 )
@@ -71,7 +80,7 @@ if( NOT ${index} EQUAL -1 )
     string( LENGTH "${abs}" _orgStrLen )
     string( LENGTH "${CMAKE_HOME_DIRECTORY}" _findStrLen )
     math( EXPR _subLen "${_orgStrLen} - ${_findStrLen}" )
-    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen}  abs )
+    string( SUBSTRING "${abs}" ${_findStrLen} ${_subLen} abs )
     set( abs ".${abs}" )
 endif()
 
