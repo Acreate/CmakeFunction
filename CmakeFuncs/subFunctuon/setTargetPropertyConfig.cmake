@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.19 )
+﻿cmake_minimum_required( VERSION 3.19 )
 
 # ## 设置程序输出位置
 function( set_target_BIN_out_path_property target_obj out_path )
@@ -34,7 +34,7 @@ endfunction()
 function( set_target_PDB_out_path_property target_obj out_path )
     set_target_properties( "${target_obj}" PROPERTIES
         PDB_OUTPUT_DIRECTORY "${out_path}"
-		
+
         # PDB_OUTPUT_DIRECTORY_MINSIZEREL ${out_path}
         # PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO ${out_path}
         # PDB_OUTPUT_DIRECTORY_RELEASE ${out_path}
@@ -48,8 +48,10 @@ function( set_target_PDB_out_path_property target_obj out_path )
         # COMPILE_PDB_OUTPUT_DIRECTORY_RELEASE ${out_path}
         # COMPILE_PDB_OUTPUT_DIRECTORY_DEBUG ${out_path}
     )
-	file( GLOB result_pdb_files "${out_path}/*" "*.pdb" )
-	file( REMOVE ${result_pdb_files} )
+
+    if( EXISTS "${out_path}/${target_obj}.pdb" )
+        file( REMOVE "${out_path}/${target_obj}.pdb" )
+    endif()
 endfunction()
 
 # ## 激活 pbd 的输出
@@ -89,7 +91,7 @@ function( target_obj_PDB_propertie target_obj )
     # 仅针对 MSVC 编译器（Windows 平台）生效
     if( MSVC )
         get_target_property( targetPDBOutPath "${target_obj}" PDB_OUTPUT_DIRECTORY
-            )
+        )
         get_target_property( targetSources ${target_obj} SOURCES )
         set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Zi /FS" )
         set( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /INCREMENTAL:NO" )
