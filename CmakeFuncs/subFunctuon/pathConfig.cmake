@@ -148,6 +148,7 @@ function( user_install_copy_file dest_dir_path )
     endforeach()
 endfunction()
 
+# # 拷贝单个路径或文件到指定目标
 function( copy_dir_path_cmake_file_command source_path target_path )
     if( EXISTS "${source_path}" )
         if( IS_DIRECTORY "${source_path}" )
@@ -157,13 +158,23 @@ function( copy_dir_path_cmake_file_command source_path target_path )
                 file( COPY "${child}" DESTINATION "${target_path}" )
             endforeach()
         else()
-            file( COPY "${result_abs_path}" DESTINATION "${target_path}" )
+            if( EXISTS ${source_path} )
+                file( COPY "${source_path}" DESTINATION "${target_path}" )
+            endif()
         endif()
 
         message( "执行拷贝任务：${source_path} 拷贝到: ${target_path}" )
     else()
         message( "路径 ${source_path} 不存在，拷贝命令失效" )
     endif()
+endfunction()
+
+# # 拷贝多个路径或文件到指定目标
+function( copy_mul_dir_path_cmake_file_command target_path source_path )
+
+    foreach( unity ${${source_path}} )
+        copy_dir_path_cmake_file_command( ${unity} ${target_path} )
+    endforeach()
 endfunction()
 
 # # 拷贝目录到指定路径
