@@ -171,7 +171,6 @@ endfunction()
 
 # # 拷贝多个路径或文件到指定目标
 function( copy_mul_dir_path_cmake_file_command target_path source_path )
-
     foreach( unity ${${source_path}} )
         copy_dir_path_cmake_file_command( ${unity} ${target_path} )
     endforeach()
@@ -405,6 +404,19 @@ function( copt_target_builder_file_to_path target_obj target_path )
         DEPENDS "${result_name}"
     )
 endfunction()
+
+# # 取消显示包含头文件内容
+function( un_show_include_info )
+    if( MSVC )
+        message( STATUS "Using MSVC" )
+
+        # 关闭 /showIncludes
+        string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_C
+            "${CMAKE_DEPFILE_FLAGS_C}" )
+        string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_CXX
+            "${CMAKE_DEPFILE_FLAGS_CXX}" )
+    endif()
+endfunction( un_show_include_info )
 
 get_filename_component( abs "${CMAKE_CURRENT_LIST_FILE}" ABSOLUTE )
 string( FIND "${abs}" "${CMAKE_HOME_DIRECTORY}" index )

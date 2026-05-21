@@ -279,6 +279,10 @@ get_path_sources( project_src_file PATHS "${CMAKE_CURRENT_LIST_DIR}/srcs" LANGUA
 
 返回该路径下的所有文件夹
 
+#### un_show_include_info()
+
+取消显示包含头文件列表信息
+
 ### setTargetPropertyConfig.cmake
 
 #### set_target_BIN_out_path_property( target_obj out_path )
