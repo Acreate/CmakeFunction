@@ -148,31 +148,67 @@ function( user_install_copy_file dest_dir_path )
 	endforeach( )
 endfunction( )
 
-# # 拷贝单个路径或文件到指定目标
-function( copy_dir_path_cmake_file_command source_path target_path )
+
+# # 拷贝单个路径或文件到指定目标，并且指定是否替换
+function( copy_replace_dir_path_cmake_file_command source_path target_path is_replace )
 	if( EXISTS "${source_path}" )
 		if( IS_DIRECTORY "${source_path}" )
 			file( GLOB children "${source_path}/*" )
 			
 			foreach( child ${children} )
-				copy_dir_path_cmake_file_command( "${source_path}/${child}" ${target_path} )
+				copy_replace_dir_path_cmake_file_command( "${source_path}/${child}" ${target_path} ${is_replace} )
 			endforeach( )
 		else( )
 			get_current_dir_name( base_file_name ${source_path} )
 			if( EXISTS "${target_path}/${base_file_name}" )
-				file( REMOVE "${target_path}/${base_file_name}" )
-				message( "执行覆盖任务：${source_path} 覆盖到: ${target_path}/${base_file_name}" )
+				if( ${is_replace} )
+					file( REMOVE "${target_path}/${base_file_name}" )
+					message( "执行覆盖任务：${source_path} 覆盖到: ${target_path}/${base_file_name}" )
+					file( COPY "${source_path}" DESTINATION "${target_path}/" )
+				else( )
+					message( "${target_path}/${base_file_name} 已存在，跳过拷贝任务：${source_path}" )
+				endif( )
 			else( )
 				message( "执行拷贝任务：${source_path} 拷贝到: ${target_path}/${base_file_name}" )
+				file( COPY "${source_path}" DESTINATION "${target_path}/" )
 			endif( )
-			
-			file( COPY "${source_path}" DESTINATION "${target_path}/" )
 			
 		endif( )
 		
 	else( )
 		message( "路径 ${source_path} 不存在，拷贝命令失效" )
 	endif( )
+endfunction( )
+
+# # 拷贝单个路径或文件到指定目标
+function( copy_dir_path_cmake_file_command source_path target_path )
+	if( EXISTS "${source_path}" )
+		if( IS_DIRECTORY "${source_path}" )
+			file( GLOB children "${source_path}/*" )
+			foreach( child ${children} )
+				copy_dir_path_cmake_file_command( "${source_path}/${child}" ${target_path} )
+			endforeach( )
+		else( )
+			get_current_dir_name( base_file_name ${source_path} )
+			if( NOT EXISTS "${target_path}/${base_file_name}" )
+				message( "执行拷贝任务：${source_path} 拷贝到: ${target_path}/${base_file_name}" )
+				file( COPY "${source_path}" DESTINATION "${target_path}/" )
+			else( )
+				message( "${target_path}/${base_file_name} 已存在，跳过拷贝任务：${source_path}" )
+			endif( )
+			
+		endif( )
+		
+	else( )
+		message( "路径 ${source_path} 不存在，拷贝命令失效" )
+	endif( )
+endfunction( )
+
+# # 拷贝多个路径或文件到指定目标，并且指定是否替换
+function( copy_replace_mul_dir_path_cmake_file_command is_replace target_path source_path )
+	foreach( unity ${${source_path}} )
+		copy_replace_dir_path_cmake_file_command( ${unity} ${target_path} ${is_replace} )
+	endforeach( )
 endfunction( )
 
 # # 拷贝多个路径或文件到指定目标

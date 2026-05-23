@@ -186,7 +186,13 @@ set_target_static_lib_out_path_property( "${prject_name}" "${Project_Run_Static_
 set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${prject_name}" )
 ```
 
+#### copy_replace_dir_path_cmake_file_command( source_path target_path is_replace )
 
+把 source_path  （该文件）拷贝到 target_path 目标，如果存在相同目标，则使用 is_replace 指定是否覆盖
+
+#### copy_replace_mul_dir_path_cmake_file_command(  is_replace target_path source_path  )
+
+把 source_path  (目录中所有文件)拷贝到 target_path 目标，如果存在相同目标，则使用 is_replace 指定是否覆盖
 
 #### copy_target_builder_file_to_path( target_obj target_path )
 
