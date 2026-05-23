@@ -188,13 +188,13 @@ set_target_pdb_out_path_property( "${prject_name}" "${Project_Run_Pbd_Path}/${pr
 
 
 
-#### copt_target_builder_file_to_path( target_obj target_path )
+#### copy_target_builder_file_to_path( target_obj target_path )
 
 把 target_obj 目标中的生成文件拷贝到 target_path 目录下
 
 #### get_current_dir_name( out_name in_path )
 
-获取当前文件夹名称
+获取当前文件或文件夹的名称
 
 #### get_parent_dir_name( out_name in_path )
 
