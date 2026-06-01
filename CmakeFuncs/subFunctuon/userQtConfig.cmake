@@ -58,6 +58,7 @@ qt_deploy_runtime_dependencies(
 	PLUGINS_DIR \"${Project_Run_Bin_Path}\"
 	LIB_DIR \"${Project_Run_Bin_Path}\"
 	BIN_DIR \"${Project_Run_Bin_Path}\"
+    NO_OVERWRITE
 )
 message( \"完成程序 : ${executable_path}\" )
 " )
