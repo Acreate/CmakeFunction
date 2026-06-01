@@ -448,7 +448,7 @@ function( copy_target_builder_file_to_path target_obj target_path )
 endfunction( )
 
 # # 取消显示包含头文件内容
-function( un_show_include_info )
+function( un_show_include_info target_name )
 	if( MSVC )
 		message( STATUS "使用 MSVC 编译环境" )
 		
@@ -457,6 +457,18 @@ function( un_show_include_info )
 			"${CMAKE_DEPFILE_FLAGS_C}" )
 		string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_CXX
 			"${CMAKE_DEPFILE_FLAGS_CXX}" )
+		
+		# 获取目标的当前编译选项
+		get_target_property( TARGET_COMPILE_OPTIONS ${target_name} COMPILE_OPTIONS )
+		
+		# 检查是否存在编译选项
+		if( TARGET_COMPILE_OPTIONS )
+			# 移除 /showIncludes 编译选项
+			list( REMOVE_ITEM TARGET_COMPILE_OPTIONS "/showIncludes" )
+			
+			# 更新目标的编译选项
+			set_target_properties( ${target_name} PROPERTIES COMPILE_OPTIONS "${TARGET_COMPILE_OPTIONS}" )
+		endif( )
 	endif( )
 endfunction( un_show_include_info )
 
