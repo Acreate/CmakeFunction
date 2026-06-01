@@ -450,7 +450,7 @@ endfunction( )
 # # 取消显示包含头文件内容
 function( un_show_include_info )
 	if( MSVC )
-		message( STATUS "Using MSVC" )
+		message( STATUS "使用 MSVC 编译环境" )
 		
 		# 关闭 /showIncludes
 		string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_C
