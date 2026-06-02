@@ -449,14 +449,28 @@ endfunction( )
 
 # # 取消显示包含头文件内容
 function( un_show_include_info target_name )
+	# 关闭 /showIncludes
 	if( MSVC )
 		message( STATUS "使用 MSVC 编译环境" )
 		
-		# 关闭 /showIncludes
-		string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_C
-			"${CMAKE_DEPFILE_FLAGS_C}" )
-		string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_CXX
-			"${CMAKE_DEPFILE_FLAGS_CXX}" )
+		
+		# 检查是否存在编译选项
+		if( CMAKE_DEPFILE_FLAGS_CXX )
+			# 移除 /showIncludes 编译选项
+			list( REMOVE_ITEM CMAKE_DEPFILE_FLAGS_CXX "/showIncludes" )
+			string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_CXX
+				"${CMAKE_DEPFILE_FLAGS_CXX}" )
+			set( CMAKE_DEPFILE_FLAGS_CXX ${CMAKE_DEPFILE_FLAGS_CXX} PARENT_SCOPE )
+		endif( )
+		
+		# 检查是否存在编译选项
+		if( CMAKE_DEPFILE_FLAGS_C )
+			# 移除 /showIncludes 编译选项
+			list( REMOVE_ITEM CMAKE_DEPFILE_FLAGS_C "/showIncludes" )
+			string( REPLACE "/showIncludes" "" CMAKE_DEPFILE_FLAGS_C
+				"${CMAKE_DEPFILE_FLAGS_C}" )
+			set( CMAKE_DEPFILE_FLAGS_C ${CMAKE_DEPFILE_FLAGS_C} PARENT_SCOPE )
+		endif( )
 		
 		# 获取目标的当前编译选项
 		get_target_property( TARGET_COMPILE_OPTIONS ${target_name} COMPILE_OPTIONS )
@@ -469,6 +483,19 @@ function( un_show_include_info target_name )
 			# 更新目标的编译选项
 			set_target_properties( ${target_name} PROPERTIES COMPILE_OPTIONS "${TARGET_COMPILE_OPTIONS}" )
 		endif( )
+		
+		# 检查是否存在编译选项
+		if( CMAKE_CXX_SCANDEP_SOURCE )
+			# 移除 /showIncludes 编译选项
+			list( REMOVE_ITEM CMAKE_CXX_SCANDEP_SOURCE "/showIncludes" )
+			list( REMOVE_ITEM CMAKE_CXX_SCANDEP_SOURCE "-showIncludes" )
+			string( REPLACE "/showIncludes" "" CMAKE_CXX_SCANDEP_SOURCE
+				"${CMAKE_CXX_SCANDEP_SOURCE}" )
+			string( REPLACE "-showIncludes" "" CMAKE_CXX_SCANDEP_SOURCE
+				"${CMAKE_CXX_SCANDEP_SOURCE}" )
+			set( CMAKE_CXX_SCANDEP_SOURCE ${CMAKE_CXX_SCANDEP_SOURCE} PARENT_SCOPE )
+		endif( )
+		
 	endif( )
 endfunction( un_show_include_info )
 
