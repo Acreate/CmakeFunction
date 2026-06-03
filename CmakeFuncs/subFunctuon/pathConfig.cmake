@@ -159,7 +159,7 @@ function( copy_file is_replace source_home_path source_target_path dest_target_p
 			file( GLOB children "${source_target_path}/*" )
 			get_current_dir_name( resulut_base_name "${source_target_path}" )
 			foreach( child ${children} )
-				copy_file( ${is_replace} ${source_home_path} "${child}" "${target_path}/${resulut_base_name}" )
+				copy_file( ${is_replace} ${source_home_path} "${child}" "${dest_target_path}/${resulut_base_name}" )
 			endforeach( )
 		else( )
 			get_current_dir_name( resulut_base_name "${source_target_path}" )
