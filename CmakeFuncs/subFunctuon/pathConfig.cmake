@@ -171,6 +171,7 @@ function( copy_file is_replace source_home_path source_target_path dest_target_p
 			set( message_string_key "拷贝" )
 			if( ${is_replace} )
 				set( message_string_key "覆盖" )
+				file( REMOVE_RECURSE ${target_file_path} )
 			endif( )
 			
 			message( "执行${message_string_key}任务：${source_target_path} ${message_string_key}到: ${target_file_path}" )
