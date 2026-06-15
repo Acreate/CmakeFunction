@@ -1,6 +1,8 @@
 ﻿cmake_minimum_required( VERSION 3.19 )
 
 ## 对全局关闭增量编译
+## 对于一些特殊环境，应当除去增量编译，否则会导致生成的 .pdb 过大而无法编译。
+## 其次，对于 qt 来说，会导致调用 main 等主函数后，调试器会尝试发出异常中断—增量编译导致的符号导向异常或释放异常。
 function( close_global_compile_batching )
 	# 全局对所有目标生效
 	if( MSVC )

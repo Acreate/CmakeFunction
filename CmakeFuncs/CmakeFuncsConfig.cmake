@@ -37,9 +37,7 @@ function( init_cmake_func )
 	set( CMAKE_AUTORCC ON PARENT_SCOPE )
 	
 	set( CMAKE_SUPPRESS_REGENERATION ON PARENT_SCOPE )
-	## 对于一些特殊环境，应当除去增量编译，否则会导致生成的 .pdb 过大而无法编译。
-	## 其次，对于 qt 来说，会导致调用 main 等主函数后，调试器会尝试发出异常中断—增量编译导致的符号导向异常或释放异常。
-	close_global_compile_batching( )
+
 endfunction( )
 
 message( "----\n\t\t调用:(${abs}[${CMAKE_CURRENT_FUNCTION}]:${CMAKE_CURRENT_LIST_LINE})行 ->\n\t\t\t消息:列表加载完毕" )
