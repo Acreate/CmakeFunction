@@ -30,6 +30,14 @@ function( close_target_compile_batching target )
 endfunction( )
 
 
+# ## 设置程序输出名称
+function( set_target_BIN_out_name_property target_obj out_name )
+	set_target_properties( "${target_obj}" PROPERTIES
+		DEBUG_OUTPUT_NAME "${out_name}"
+		RELEASE_OUTPUT_NAME "${out_name}"
+		OUTPUT_NAME "${out_name}"
+	)
+endfunction( )
 # ## 设置程序输出位置
 function( set_target_BIN_out_path_property target_obj out_path )
 	set_target_properties( "${target_obj}" PROPERTIES
