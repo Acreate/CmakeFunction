@@ -82,9 +82,13 @@ function( set_target_PDB_out_path_property target_obj out_path )
 		COMPILE_PDB_OUTPUT_DIRECTORY_RELEASE "${out_path}"
 		COMPILE_PDB_OUTPUT_DIRECTORY_DEBUG "${out_path}"
 	)
-	
-	if( EXISTS "${out_path}/${target_obj}.pdb" )
-		file( REMOVE "${out_path}/${target_obj}.pdb" )
+	set( pbd_file_path "${out_path}/${target_obj}.pdb" )
+	if( EXISTS "${pbd_file_path}" )
+		file( SIZE ${pbd_file_path} file_bytes )
+		math( EXPR file_mb "${file_bytes} / 1048576" )
+		if( ${file_mb} GREATER 1024 )
+			file( REMOVE "${pbd_file_path}" )
+		endif( )
 	endif( )
 endfunction( )
 
